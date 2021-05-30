@@ -17,20 +17,19 @@
 
 package org.kayteam.moreprefixes.playerdata;
 
-import java.util.List;
 
 public class PlayerData {
 
-    public PlayerData(List<String> prefixes) {
-        this.prefixes = prefixes;
+    public PlayerData(String prefix) {
+        this.prefix = prefix;
     }
 
-    private List<String> prefixes;
-    public List<String> getPrefixes() {
-        return prefixes;
+    private String prefix;
+    public String getPrefix() {
+        return prefix;
     }
-    public void setPrefixes(List<String> prefixes) {
-        this.prefixes = prefixes;
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
 }
