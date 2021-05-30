@@ -1,0 +1,4 @@
+prefix: ""
+moreTags:
+  isConsole: "%prefix% &fNo puedes usar este comando desde la consola."
+  noPermission: "%prefix% &fNo tienes permisos para ejecutar este comando."

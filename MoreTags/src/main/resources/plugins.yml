@@ -1,0 +1,20 @@
+main: org.kayteam.moretags.MoreTags
+name: MoreTags
+version: 1.0.0
+commands:
+  MoreTagsAdmin:
+    description: Can manage MoreTags plugin.
+    aliases:
+      - mtagsadmin
+      - mtadmin
+      - mta
+  MoreTags:
+    description: Can change your tags.
+    aliases:
+      - mtags
+      - mt
+permissions:
+  moretags.admin:
+    description: Can execute /MoreTagsAdmin
+  moretags.user:
+    description: Can execute /MoreTags

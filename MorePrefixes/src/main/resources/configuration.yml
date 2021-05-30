@@ -1,9 +1,0 @@
-# Storages Available: YAML, MYSQL
-storage: YAML
-mysql:
-  ip: ""
-  port: ""
-  username: ""
-  password: ""
-  database: ""
-  table: ""
