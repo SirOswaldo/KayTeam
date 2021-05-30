@@ -42,13 +42,15 @@ public class MySQL {
         this.values = values;
     }
 
-    public void startConnection() {
+    public boolean startConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/" + database, username, password);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
     public void closeConnection() {
         try {
