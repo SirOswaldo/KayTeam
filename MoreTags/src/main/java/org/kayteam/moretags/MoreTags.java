@@ -66,11 +66,7 @@ public class MoreTags extends JavaPlugin {
         configuration.registerFileConfiguration();
         messages.registerFileConfiguration();
         // Storage
-        if ("MYSQL".equals(configuration.getFileConfiguration().getString("storage"))) {
-            storage = new MySqlStorage(this);
-        } else {
-            storage = new YamlStorage(this);
-        }
+        setupStorage();
         // Load All Tags
         tagManager.loadAllTags();
         // PlaceholderAPI
@@ -84,20 +80,23 @@ public class MoreTags extends JavaPlugin {
         // PlayerData
         playerDataManager = new PlayerDataManager(this);
         // Load Online Players PlayerData
-        for (Player player:getServer().getOnlinePlayers()) {
-            UUID uuid = player.getUniqueId();
-            playerDataManager.loadPlayerData(uuid);
-        }
+        playerDataManager.loadOnlinePlayerData();
     }
 
     @Override
     public void onDisable() {
         // Unload Online Players PlayerData
-        for (Player player:getServer().getOnlinePlayers()) {
-            UUID uuid = player.getUniqueId();
-            playerDataManager.unloadPlayerData(uuid);
-        }
+        playerDataManager.unloadOnlinePlayerData();
         // Load All Tags
         tagManager.unloadAllTags();
     }
+
+    public void setupStorage() {
+        if ("MYSQL".equals(configuration.getFileConfiguration().getString("storage"))) {
+            storage = new MySqlStorage(this);
+        } else {
+            storage = new YamlStorage(this);
+        }
+    }
+
 }

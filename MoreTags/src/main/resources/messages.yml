@@ -1,4 +1,33 @@
 prefix: "&aMore&2Tags &8»"
+moreTagsAdmin:
+  noPermission: "%prefix% &fNo tienes permisos para ejecutar este comando."
+  emptyArguments:
+    - "%prefix% &fEl comando no puede estar vació."
+    - "&fPara más información del comando, usar &2/MoreTags help"
+  invalidArguments:
+    - "%prefix% &fEl argumento que introdujo no es correcto."
+    - "&fPara más información del comando, usar &2/MoreTagsAdmin help"
+  help:
+    - "%prefix%"
+    - "MoreTagsAdmin reload"
+    - "MoreTagsAdmin clear [player]"
+    - "MoreTagsAdmin select [player] [tag]"
+    - "MoreTagsAdmin version"
+    - ""
+  reloaded: "%prefix% &fEl complemento fue recargado."
+  clear:
+    emptyPlayer: "%prefix% &fEl jugador no puede estar vació."
+    invalidPlayer: "%prefix% &fEl jugador &2%player% &fno es valido."
+    playerTagCleared: "%prefix% &fLimpiaste el tag del jugador &2%player%&f."
+    playerTagClearedNotify: "%prefix% &fTu tag fue limpiado."
+  select:
+    emptyPlayer: "%prefix% &fEl jugador no puede estar vació."
+    invalidPlayer: "%prefix% &fEl jugador &2%player% &fno es valido."
+    emptyTag: "%prefix% &fEl nombre del tag no puede estar vació."
+    invalidTag: "%prefix% &fEl tag &2%tag% &fno es válido."
+    alreadySelectedTag: "%prefix% &fEl jugador &2%player% &fya está usando el tag &2%tag%&f."
+    tagSelected: "%prefix% &fSeleccionaste el tag &2%tag% &fpara el jugador &2%player%&f."
+    tagSelectedNotify: "%prefix% &fSeleccionaste el tag &2%tag%&f."
 moreTags:
   isConsole: "%prefix% &fNo puedes usar este comando desde la consola."
   noPermission: "%prefix% &fNo tienes permisos para ejecutar este comando."

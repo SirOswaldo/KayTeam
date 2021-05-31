@@ -17,6 +17,7 @@
 
 package org.kayteam.moretags.playerdata;
 
+import org.bukkit.entity.Player;
 import org.kayteam.moretags.MoreTags;
 import org.kayteam.moretags.storage.Storage;
 
@@ -33,6 +34,13 @@ public class PlayerDataManager {
 
     private final HashMap<UUID, PlayerData> players = new HashMap<>();
 
+    public void loadOnlinePlayerData() {
+        for (Player player:moreTags.getServer().getOnlinePlayers()) {
+            UUID uuid = player.getUniqueId();
+            loadPlayerData(uuid);
+        }
+    }
+
     public void loadPlayerData(UUID uuid) {
         Storage storage = moreTags.getStorage();
         String tag = storage.getTag(uuid);
@@ -45,6 +53,13 @@ public class PlayerDataManager {
         PlayerData playerData = players.get(uuid);
         String tag = playerData.getTag();
         storage.setTag(uuid, tag);
+    }
+
+    public void unloadOnlinePlayerData() {
+        for (Player player:moreTags.getServer().getOnlinePlayers()) {
+            UUID uuid = player.getUniqueId();
+            unloadPlayerData(uuid);
+        }
     }
 
     public void unloadPlayerData(UUID uuid) {

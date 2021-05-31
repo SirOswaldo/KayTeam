@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.kayteam.moretags.MoreTags;
 import org.kayteam.moretags.playerdata.PlayerData;
 import org.kayteam.moretags.tag.Tag;
+import org.kayteam.moretags.util.yaml.Yaml;
 
 public class MorePrefixesCommand implements CommandExecutor {
 
@@ -35,13 +36,15 @@ public class MorePrefixesCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        Yaml messages = moreTags.getMessages();
+        String path = "moreTags.";
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             if (player.hasPermission("moretags.user")) {
                 if (strings.length > 0) {
                     switch (strings[0].toLowerCase()) {
                         case "help":
-                            moreTags.getMessages().sendMessage(player, "moreTags.help", true);
+                            messages.sendMessage(player, path + "help", true);
                             break;
                         case "select":
                             if (strings.length > 1) {
@@ -51,40 +54,40 @@ public class MorePrefixesCommand implements CommandExecutor {
                                         PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
                                         if (!playerData.getTag().equals(tag)) {
                                             playerData.setTag(tag);
-                                            moreTags.getMessages().sendMessage(player, "moreTags.select.tagSelected", new String[][] {{"%tag%", tag}}, true);
+                                            messages.sendMessage(player, path + "select.tagSelected", new String[][] {{"%tag%", tag}}, true);
                                         } else {
-                                            moreTags.getMessages().sendMessage(player, "moreTags.select.alreadySelectedTag", new String[][] {{"%tag%", tag}}, true);
+                                            messages.sendMessage(player, path + "select.alreadySelectedTag", new String[][] {{"%tag%", tag}}, true);
                                         }
                                     } else {
-                                        moreTags.getMessages().sendMessage(player, "moreTags.select.noPermissionTag", new String[][] {{"%tag%", tag}}, true);
+                                        messages.sendMessage(player, path + "select.noPermissionTag", new String[][] {{"%tag%", tag}}, true);
                                     }
                                 } else {
-                                    moreTags.getMessages().sendMessage(player, "moreTags.select.invalidTag", new String[][] {{"%tag%", tag}}, true);
+                                    messages.sendMessage(player, path + "select.invalidTag", new String[][] {{"%tag%", tag}}, true);
                                 }
                             } else {
-                                moreTags.getMessages().sendMessage(player, "moreTags.select.emptyTag", true);
+                                messages.sendMessage(player, path + "select.emptyTag", true);
                             }
                             break;
                         case "clear":
                             moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId()).setTag("");
-                            moreTags.getMessages().sendMessage(player, "moreTags.clear.tagCleared", true);
+                            messages.sendMessage(player, path + "clear.tagCleared", true);
                             break;
                         case "info":
                             PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
                             Tag tag = moreTags.getTagManager().getTag(playerData.getTag());
-                            moreTags.getMessages().sendMessage(player, "moreTags.info", new String[][] {{"%tag%", playerData.getTag()}, {"%prefix%", tag.getPrefix()}, {"%suffix%", tag.getSuffix()}}, true);
+                            messages.sendMessage(player, path + "info", new String[][] {{"%tag%", playerData.getTag()}, {"%prefix%", tag.getPrefix()}, {"%suffix%", tag.getSuffix()}}, true);
                             break;
                         default:
-                            moreTags.getMessages().sendMessage(player, "moreTags.invalidArguments", true);
+                            messages.sendMessage(player, path + "invalidArguments", true);
                     }
                 } else {
-                    moreTags.getMessages().sendMessage(player, "moreTags.emptyArguments", true);
+                    messages.sendMessage(player, path + "emptyArguments", true);
                 }
             } else {
-                moreTags.getMessages().sendMessage(player, "moreTags.noPermission", true);
+                messages.sendMessage(player, path + "noPermission", true);
             }
         } else {
-            moreTags.getMessages().sendMessage(commandSender, "moreTags.isConsole", true);
+            messages.sendMessage(commandSender, path + "isConsole", true);
         }
         return true;
     }
