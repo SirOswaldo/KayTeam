@@ -20,16 +20,17 @@ package org.kayteam.moretags.playerdata;
 
 public class PlayerData {
 
-    public PlayerData(String prefix) {
-        this.prefix = prefix;
+    private String tag;
+
+    public PlayerData(String tag) {
+        this.tag = tag;
     }
 
-    private String prefix;
-    public String getPrefix() {
-        return prefix;
+    public String getTag() {
+        return tag;
     }
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
 }

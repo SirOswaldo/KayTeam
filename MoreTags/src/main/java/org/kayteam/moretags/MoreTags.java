@@ -28,6 +28,7 @@ import org.kayteam.moretags.playerdata.PlayerDataManager;
 import org.kayteam.moretags.storage.Storage;
 import org.kayteam.moretags.storage.storages.MySqlStorage;
 import org.kayteam.moretags.storage.storages.YamlStorage;
+import org.kayteam.moretags.tag.TagManager;
 import org.kayteam.moretags.util.papi.PlaceholderAPIUtil;
 import org.kayteam.moretags.util.yaml.Yaml;
 
@@ -54,6 +55,11 @@ public class MoreTags extends JavaPlugin {
         return storage;
     }
 
+    private final TagManager tagManager = new TagManager(this);
+    public TagManager getTagManager() {
+        return tagManager;
+    }
+
     @Override
     public void onEnable() {
         // Yaml
@@ -65,8 +71,8 @@ public class MoreTags extends JavaPlugin {
         } else {
             storage = new YamlStorage(this);
         }
-        // PlayerData
-        playerDataManager = new PlayerDataManager(this);
+        // Load All Tags
+        tagManager.loadAllTags();
         // PlaceholderAPI
         PlaceholderAPIUtil.registerExpansion(new MoreTagsExpansion(this));
         // Commands
@@ -75,10 +81,12 @@ public class MoreTags extends JavaPlugin {
         // Listeners
         getServer().getPluginManager().registerEvents(new AsyncPlayerPreLoginListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(this), this);
+        // PlayerData
+        playerDataManager = new PlayerDataManager(this);
         // Load Online Players PlayerData
         for (Player player:getServer().getOnlinePlayers()) {
             UUID uuid = player.getUniqueId();
-            playerDataManager.load(uuid);
+            playerDataManager.loadPlayerData(uuid);
         }
     }
 
@@ -87,7 +95,9 @@ public class MoreTags extends JavaPlugin {
         // Unload Online Players PlayerData
         for (Player player:getServer().getOnlinePlayers()) {
             UUID uuid = player.getUniqueId();
-            playerDataManager.unload(uuid);
+            playerDataManager.unloadPlayerData(uuid);
         }
+        // Load All Tags
+        tagManager.unloadAllTags();
     }
 }

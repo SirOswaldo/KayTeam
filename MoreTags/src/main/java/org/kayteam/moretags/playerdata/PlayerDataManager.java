@@ -33,30 +33,30 @@ public class PlayerDataManager {
 
     private final HashMap<UUID, PlayerData> players = new HashMap<>();
 
-    public void load(UUID uuid) {
+    public void loadPlayerData(UUID uuid) {
         Storage storage = moreTags.getStorage();
-        String prefix = storage.getPrefix(uuid);
-        PlayerData playerData = new PlayerData(prefix);
+        String tag = storage.getTag(uuid);
+        PlayerData playerData = new PlayerData(tag);
         players.put(uuid, playerData);
     }
 
-    public void save(UUID uuid) {
+    public void savePlayerData(UUID uuid) {
         Storage storage = moreTags.getStorage();
         PlayerData playerData = players.get(uuid);
-        String prefix = playerData.getPrefix();
-        storage.setPrefix(uuid, prefix);
+        String tag = playerData.getTag();
+        storage.setTag(uuid, tag);
     }
 
-    public void unload(UUID uuid) {
-        save(uuid);
+    public void unloadPlayerData(UUID uuid) {
+        savePlayerData(uuid);
         players.remove(uuid);
     }
 
-    public PlayerData get(UUID uuid) {
+    public PlayerData getPlayerData(UUID uuid) {
         return players.get(uuid);
     }
 
-    public boolean contain(UUID uuid) {
+    public boolean containPlayerData(UUID uuid) {
         return players.containsKey(uuid);
     }
 

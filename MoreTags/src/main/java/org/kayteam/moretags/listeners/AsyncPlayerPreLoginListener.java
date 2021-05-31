@@ -38,7 +38,7 @@ public class AsyncPlayerPreLoginListener implements Listener {
         if (event.getLoginResult().equals(AsyncPlayerPreLoginEvent.Result.ALLOWED)) {
             PlayerDataManager playerDataManager = moreTags.getPlayerDataManager();
             UUID uuid = event.getUniqueId();
-            playerDataManager.load(uuid);
+            playerDataManager.loadPlayerData(uuid);
         }
     }
 

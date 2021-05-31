@@ -42,7 +42,7 @@ public class MySqlStorage extends Storage {
         String table = configuration.getString("mysql.table");
         String[][] values = new String[][] {
                 {"UUID", "VARCHAR(64)"},
-                {"PREFIX", "VARCHAR(32)"}
+                {"TAG", "VARCHAR(32)"}
         };
         mySQL = new MySQL(ip,port,username,password, database, table, values);
         if (!mySQL.startConnection()) {
@@ -55,21 +55,21 @@ public class MySqlStorage extends Storage {
     }
 
     @Override
-    public String getPrefix(UUID uuid) {
+    public String getTag(UUID uuid) {
         String result = "";
         mySQL.startConnection();
         if (mySQL.existsPrimaryKey(uuid.toString())) {
-            result = mySQL.getString(uuid.toString(), "PREFIX");
+            result = mySQL.getString(uuid.toString(), "TAG");
         }
         mySQL.closeConnection();
         return result;
     }
 
     @Override
-    public void setPrefix(UUID uuid, String prefix) {
+    public void setTag(UUID uuid, String prefix) {
         mySQL.startConnection();
         if (mySQL.existsPrimaryKey(uuid.toString())) {
-            mySQL.setString(uuid.toString(), "PREFIX", prefix);
+            mySQL.setString(uuid.toString(), "TAG", prefix);
         }
         mySQL.closeConnection();
     }

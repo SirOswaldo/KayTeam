@@ -15,24 +15,34 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.kayteam.moretags.storage;
+package org.kayteam.moretags.tag;
 
-import org.kayteam.moretags.storage.enums.StorageType;
+public class Tag {
 
-import java.util.UUID;
+    private final String name;
+    private String prefix;
+    private String suffix;
 
-public abstract class Storage {
-
-    private final StorageType storageType;
-    public StorageType getStorageType() {
-        return storageType;
+    public Tag(String name, String prefix, String suffix) {
+        this.name = name;
+        this.prefix = prefix;
+        this.suffix = suffix;
     }
 
-    public Storage(StorageType storageType) {
-        this.storageType = storageType;
+    public String getName() {
+        return name;
     }
-
-    public abstract String getTag(UUID uuid);
-    public abstract void setTag(UUID uuid, String prefix);
+    public String getPrefix() {
+        return prefix;
+    }
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+    public String getSuffix() {
+        return suffix;
+    }
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
+    }
 
 }

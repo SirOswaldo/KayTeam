@@ -23,6 +23,10 @@ import org.bukkit.entity.Player;
 import org.kayteam.moretags.MoreTags;
 import org.kayteam.moretags.playerdata.PlayerData;
 import org.kayteam.moretags.playerdata.PlayerDataManager;
+import org.kayteam.moretags.tag.Tag;
+import org.kayteam.moretags.tag.TagManager;
+
+import java.util.UUID;
 
 public class MoreTagsExpansion extends PlaceholderExpansion {
 
@@ -34,7 +38,7 @@ public class MoreTagsExpansion extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "moreprefixes";
+        return "moretags";
     }
 
     @Override
@@ -48,24 +52,48 @@ public class MoreTagsExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer p, String params) {
+    public String onRequest(OfflinePlayer player, String params) {
         PlayerDataManager playerDataManager = moreTags.getPlayerDataManager();
-        if (playerDataManager.contain(p.getUniqueId())) {
-            if (params.equals("prefix")) {
-                PlayerData playerData = playerDataManager.get(p.getUniqueId());
-                return playerData.getPrefix();
+        if (player.isOnline()) {
+            UUID uuid = player.getUniqueId();
+            if (playerDataManager.containPlayerData(uuid)) {
+                PlayerData playerData = playerDataManager.getPlayerData(uuid);
+                TagManager tagManager = moreTags.getTagManager();
+                String name = playerData.getTag();
+                if (tagManager.containTag(name)) {
+                    Tag tag = tagManager.getTag(name);
+                    switch (params) {
+                        case "prefix":
+                            return tag.getPrefix();
+                        case "suffix":
+                            return tag.getSuffix();
+                        case "tag":
+                            return tag.getName();
+                    }
+                }
             }
         }
         return "";
     }
 
     @Override
-    public String onPlaceholderRequest(Player p, String params) {
+    public String onPlaceholderRequest(Player player, String params) {
         PlayerDataManager playerDataManager = moreTags.getPlayerDataManager();
-        if (playerDataManager.contain(p.getUniqueId())) {
-            if (params.equals("prefix")) {
-                PlayerData playerData = playerDataManager.get(p.getUniqueId());
-                return playerData.getPrefix();
+        UUID uuid = player.getUniqueId();
+        if (playerDataManager.containPlayerData(uuid)) {
+            PlayerData playerData = playerDataManager.getPlayerData(uuid);
+            TagManager tagManager = moreTags.getTagManager();
+            String name = playerData.getTag();
+            if (tagManager.containTag(name)) {
+                Tag tag = tagManager.getTag(name);
+                switch (params) {
+                    case "prefix":
+                        return tag.getPrefix();
+                    case "suffix":
+                        return tag.getSuffix();
+                    case "tag":
+                        return tag.getName();
+                }
             }
         }
         return "";

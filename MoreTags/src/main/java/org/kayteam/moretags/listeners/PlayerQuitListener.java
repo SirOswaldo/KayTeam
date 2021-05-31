@@ -39,7 +39,7 @@ public class PlayerQuitListener implements Listener {
         PlayerDataManager playerDataManager = moreTags.getPlayerDataManager();
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        playerDataManager.unload(uuid);
+        playerDataManager.unloadPlayerData(uuid);
     }
 
 }

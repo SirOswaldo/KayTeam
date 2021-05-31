@@ -35,19 +35,19 @@ public class YamlStorage extends Storage {
     }
 
     @Override
-    public String getPrefix(UUID uuid) {
+    public String getTag(UUID uuid) {
         Yaml yaml = new Yaml(moreTags, "players", uuid.toString());
         yaml.registerFileConfiguration();
         FileConfiguration fileConfiguration = yaml.getFileConfiguration();
-        return fileConfiguration.getString("prefix", "");
+        return fileConfiguration.getString("tag", "");
     }
 
     @Override
-    public void setPrefix(UUID uuid, String prefix) {
+    public void setTag(UUID uuid, String prefix) {
         Yaml yaml = new Yaml(moreTags, "players", uuid.toString());
         yaml.registerFileConfiguration();
         FileConfiguration fileConfiguration = yaml.getFileConfiguration();
-        fileConfiguration.set("prefix", prefix);
+        fileConfiguration.set("tag", prefix);
         yaml.saveFileConfiguration();
     }
 

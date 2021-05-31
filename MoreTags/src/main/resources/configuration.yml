@@ -7,7 +7,13 @@ mysql:
   password: ""
   database: ""
   table: ""
-prefixes:
-  wolf: "&7Wolf"
-  fox: "&5Fox"
-  turtle: "&aTurtle"
+tags:
+  wolf:
+    prefix: "&7Wolf"
+    suffix: ""
+  fox:
+    prefix: "&5Fox"
+    suffix: ""
+  turtle:
+    prefix: "&aTurtle"
+    suffix: ""

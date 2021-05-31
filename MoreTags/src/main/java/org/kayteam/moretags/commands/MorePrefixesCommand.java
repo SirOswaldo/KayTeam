@@ -22,6 +22,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.kayteam.moretags.MoreTags;
+import org.kayteam.moretags.playerdata.PlayerData;
+import org.kayteam.moretags.tag.Tag;
 
 public class MorePrefixesCommand implements CommandExecutor {
 
@@ -37,9 +39,46 @@ public class MorePrefixesCommand implements CommandExecutor {
             Player player = (Player) commandSender;
             if (player.hasPermission("moretags.user")) {
                 if (strings.length > 0) {
-
+                    switch (strings[0].toLowerCase()) {
+                        case "help":
+                            moreTags.getMessages().sendMessage(player, "moreTags.help", true);
+                            break;
+                        case "select":
+                            if (strings.length > 1) {
+                                String tag = strings[1].toLowerCase();
+                                if (moreTags.getTagManager().containTag(tag)) {
+                                    if (player.hasPermission("moretags.tag." + tag)) {
+                                        PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
+                                        if (!playerData.getTag().equals(tag)) {
+                                            playerData.setTag(tag);
+                                            moreTags.getMessages().sendMessage(player, "moreTags.select.tagSelected", new String[][] {{"%tag%", tag}}, true);
+                                        } else {
+                                            moreTags.getMessages().sendMessage(player, "moreTags.select.alreadySelectedTag", new String[][] {{"%tag%", tag}}, true);
+                                        }
+                                    } else {
+                                        moreTags.getMessages().sendMessage(player, "moreTags.select.noPermissionTag", new String[][] {{"%tag%", tag}}, true);
+                                    }
+                                } else {
+                                    moreTags.getMessages().sendMessage(player, "moreTags.select.invalidTag", new String[][] {{"%tag%", tag}}, true);
+                                }
+                            } else {
+                                moreTags.getMessages().sendMessage(player, "moreTags.select.emptyTag", true);
+                            }
+                            break;
+                        case "clear":
+                            moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId()).setTag("");
+                            moreTags.getMessages().sendMessage(player, "moreTags.clear.tagCleared", true);
+                            break;
+                        case "info":
+                            PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
+                            Tag tag = moreTags.getTagManager().getTag(playerData.getTag());
+                            moreTags.getMessages().sendMessage(player, "moreTags.info", new String[][] {{"%tag%", playerData.getTag()}, {"%prefix%", tag.getPrefix()}, {"%suffix%", tag.getSuffix()}}, true);
+                            break;
+                        default:
+                            moreTags.getMessages().sendMessage(player, "moreTags.invalidArguments", true);
+                    }
                 } else {
-
+                    moreTags.getMessages().sendMessage(player, "moreTags.emptyArguments", true);
                 }
             } else {
                 moreTags.getMessages().sendMessage(player, "moreTags.noPermission", true);
