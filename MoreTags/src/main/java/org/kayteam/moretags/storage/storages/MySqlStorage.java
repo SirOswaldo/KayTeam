@@ -27,17 +27,15 @@ import java.util.UUID;
 
 public class MySqlStorage extends Storage {
 
-    private final MoreTags moreTags;
     private final MySQL mySQL;
 
     public MySqlStorage(MoreTags moreTags) {
         super(StorageType.MYSQL);
-        this.moreTags = moreTags;
         FileConfiguration configuration = moreTags.getConfiguration().getFileConfiguration();
         String ip = configuration.getString("mysql.ip");
-        String port = configuration.getString("mysql.port");;
-        String username = configuration.getString("mysql.username");;
-        String password = configuration.getString("mysql.password");;
+        String port = configuration.getString("mysql.port");
+        String username = configuration.getString("mysql.username");
+        String password = configuration.getString("mysql.password");
         String database = configuration.getString("mysql.database");
         String table = configuration.getString("mysql.table");
         String[][] values = new String[][] {
