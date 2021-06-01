@@ -27,3 +27,5 @@ permissions:
     description: "See your balance"
   HarimeltEconomy.Balance.Others:
     description: "See others players balance"
+  HarimeltEconomy.Pay:
+    description: "Pay others players"

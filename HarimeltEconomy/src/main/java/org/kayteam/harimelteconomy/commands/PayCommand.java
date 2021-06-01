@@ -17,11 +17,13 @@
 
 package org.kayteam.harimelteconomy.commands;
 
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.kayteam.harimelteconomy.HarimeltEconomy;
 import org.kayteam.harimelteconomy.utils.yaml.Yaml;
@@ -50,8 +52,29 @@ public class PayCommand implements CommandExecutor, TabCompleter {
                         OfflinePlayer offlinePlayer = harimeltEconomy.getServer().getOfflinePlayer(name);
                         if (offlinePlayer != null) {
                             try {
+                                Yaml configuration = harimeltEconomy.getConfiguration();
+                                FileConfiguration fileConfiguration = configuration.getFileConfiguration();
+                                double minimum = fileConfiguration.getDouble("minimumPayments");
                                 double amount = Double.parseDouble(amountString);
-                                // next verification
+                                if (amount >= minimum) {
+                                    Economy economy = harimeltEconomy.getEconomy();
+                                    if (economy.hasAccount(offlinePlayer)) {
+                                        if (economy.getBalance(player) > amount) {
+                                            economy.withdrawPlayer(player, amount);
+                                            economy.depositPlayer(offlinePlayer, amount);
+                                            messages.sendMessage(player, path + "paymentSuccessful", new String[][] {{"%player%", name}, {"%amount%", amountString}}, true);
+                                            if (offlinePlayer.isOnline()) {
+                                                messages.sendMessage(offlinePlayer.getPlayer(), path + "paymentSuccessfulNotify", new String[][] {{"%player%", player.getName()}, {"%amount%", amountString}}, true);
+                                            }
+                                        } else {
+                                            messages.sendMessage(player, path + "noSufficientBalance", true);
+                                        }
+                                    } else {
+                                        messages.sendMessage(player, path + "noAccountPlayer", new String[][] {{"%player%", name}}, true);
+                                    }
+                                } else {
+                                    messages.sendMessage(player, path + "noMinimumPayment", new String[][] {{"%minimum%", minimum + ""}}, true);
+                                }
                             } catch (NumberFormatException e) {
                                 messages.sendMessage(player, path + "invalidAmount", new String[][] {{"%player%", name}, {"%amount%", amountString}}, true);
                             }

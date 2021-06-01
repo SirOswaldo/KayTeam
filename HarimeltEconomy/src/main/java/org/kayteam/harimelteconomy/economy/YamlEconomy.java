@@ -115,7 +115,7 @@ public class YamlEconomy implements Economy {
         Yaml yaml = new Yaml(harimeltEconomy, "players", name);
         yaml.registerFileConfiguration();
         FileConfiguration fileConfiguration = yaml.getFileConfiguration();
-        return fileConfiguration.getDouble("money", 0);
+        return fileConfiguration.getDouble("balance");
     }
 
 
@@ -159,12 +159,14 @@ public class YamlEconomy implements Economy {
         Yaml yaml = new Yaml(harimeltEconomy, "players", name);
         yaml.registerFileConfiguration();
         FileConfiguration fileConfiguration = yaml.getFileConfiguration();
-        double money = fileConfiguration.getDouble("money");
-        money = money - amount;
-        fileConfiguration.set("money", money);
+        double balance = fileConfiguration.getDouble("balance");
+        balance = balance - amount;
+        fileConfiguration.set("balance", balance);
         yaml.saveFileConfiguration();
-        return new EconomyResponse(amount, money, EconomyResponse.ResponseType.SUCCESS, "NONE");
+        return new EconomyResponse(amount, balance, EconomyResponse.ResponseType.SUCCESS, "NONE");
     }
+
+
 
     @Override
     public EconomyResponse depositPlayer(String name, double amount) {
@@ -188,20 +190,31 @@ public class YamlEconomy implements Economy {
         Yaml yaml = new Yaml(harimeltEconomy, "players", name);
         yaml.registerFileConfiguration();
         FileConfiguration fileConfiguration = yaml.getFileConfiguration();
-        double money = fileConfiguration.getDouble("money");
-        money = money + amount;
-        fileConfiguration.set("money", money);
+        double balance = fileConfiguration.getDouble("balance");
+        balance = balance + amount;
+        fileConfiguration.set("balance", balance);
         yaml.saveFileConfiguration();
-        return new EconomyResponse(amount, money, EconomyResponse.ResponseType.SUCCESS, "NONE");
+        return new EconomyResponse(amount, balance, EconomyResponse.ResponseType.SUCCESS, "NONE");
     }
 
+
+
     @Override
-    public EconomyResponse createBank(String s, String s1) {
-        return null;
+    public EconomyResponse createBank(String bank, String name) {
+        Yaml yaml = new Yaml(harimeltEconomy, "players", name);
+        yaml.registerFileConfiguration();
+        FileConfiguration fileConfiguration = yaml.getFileConfiguration();
+        fileConfiguration.set("banks." + bank, 0);
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.SUCCESS, "");
     }
     @Override
-    public EconomyResponse createBank(String s, OfflinePlayer offlinePlayer) {
-        return null;
+    public EconomyResponse createBank(String bank, OfflinePlayer offlinePlayer) {
+        String name = offlinePlayer.getName();
+        Yaml yaml = new Yaml(harimeltEconomy, "players", name);
+        yaml.registerFileConfiguration();
+        FileConfiguration fileConfiguration = yaml.getFileConfiguration();
+        fileConfiguration.set("banks." + bank, 0);
+        return new EconomyResponse(0, 0, EconomyResponse.ResponseType.SUCCESS, "");
     }
     @Override
     public EconomyResponse deleteBank(String s) {
@@ -247,37 +260,33 @@ public class YamlEconomy implements Economy {
 
     @Override
     public boolean createPlayerAccount(String name) {
-        create(name);
+        createAccount(name);
         return true;
     }
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer) {
         String name = offlinePlayer.getName();
-        create(name);
+        createAccount(name);
         return true;
     }
     @Override
     public boolean createPlayerAccount(String name, String type) {
-        create(name);
+        createAccount(name);
         return true;
     }
     @Override
     public boolean createPlayerAccount(OfflinePlayer offlinePlayer, String type) {
         String name = offlinePlayer.getName();
-        create(name);
+        createAccount(name);
         return true;
     }
-    private void create(String name) {
+    private void createAccount(String name) {
         Yaml yaml = new Yaml(harimeltEconomy, "players", name);
         yaml.registerFileConfiguration();
-        FileConfiguration playerFileConfiguration = yaml.getFileConfiguration();
-        // Get Default Values
         Yaml configuration = harimeltEconomy.getConfiguration();
-        FileConfiguration fileConfiguration = configuration.getFileConfiguration();
-        double startBalance = fileConfiguration.getDouble("money.startBalance");
-        // Set Start Balance
-        playerFileConfiguration.set("money", startBalance);
-        // Save
+        harimeltEconomy.getLogger().info("Creando cuenta");
+        yaml.getFileConfiguration().set("balance", configuration.getFileConfiguration().getDouble("startBalance"));
+        yaml.getFileConfiguration().set("banks." + getName(), 0);
         yaml.saveFileConfiguration();
     }
 

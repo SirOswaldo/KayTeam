@@ -49,3 +49,12 @@ pay:
   emptyPlayer: "%prefix% &fEl jugador no puede estar vacío."
   emptyAmount: "%player% &fLa cantidad no puede estar vacía."
   invalidPlayer: "%player% &fEl jugador &2%player% &fno es válido."
+  noMinimumPayment: "%player% &fEl pago tiene que se de &2$%minimum%&f como mínimo."
+  noAccountPlayer: "%player% &fEl jugador &2%player% &fno tiene una cuenta."
+  noSufficientBalance: "%player% &fNo tienes suficiente saldo."
+  paymentSuccessful: "%player% &fPagaste &2$%amount% &fal jugador &2%player%&f."
+  paymentSuccessfulNotify: "%player% &fRecibiste un pago monto de &2$%amount%&f del jugador &2%player%&f."
+bank:
+  isConsole: "%prefix% &fNo puedes ejecutar ese comando desde la consola."
+  emptyOption: "%prefix% &fLa opción no puede estar vacía."
+  invalidOption: "%prefix% &fLa opción &2%option% &fno es válida."

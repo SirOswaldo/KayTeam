@@ -1,2 +1,2 @@
-money:
-  startBalance: 500
+startBalance: 500
+minimumPayments: 1.0

@@ -15,33 +15,37 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.kayteam.harimelteconomy.listeners;
+package org.kayteam.harimelteconomy.commands;
 
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.kayteam.harimelteconomy.HarimeltEconomy;
 
-public class PlayerJoinListener implements Listener {
+import java.util.List;
+
+public class BankAdminCommand implements CommandExecutor, TabCompleter {
 
     private final HarimeltEconomy harimeltEconomy;
 
-    public PlayerJoinListener(HarimeltEconomy harimeltEconomy) {
+    public BankAdminCommand(HarimeltEconomy harimeltEconomy) {
         this.harimeltEconomy = harimeltEconomy;
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        Economy economy = harimeltEconomy.getEconomy();
-        if (!economy.hasAccount(player)) {
-            economy.createPlayerAccount(player);
-            economy.createBank(player.getName(), player);
-        }
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        /*
+         * /BankAdmin give [PLAYER] [AMOUNT]
+         * /BankAdmin take [PLAYER] [AMOUNT]
+         * /BankAdmin set [PLAYER] [AMOUNT]
+         * /BankAdmin info [PLAYER]
+         * */
+        return true;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        return null;
+    }
 }

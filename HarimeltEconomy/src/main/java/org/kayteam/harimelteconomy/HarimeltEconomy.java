@@ -22,6 +22,7 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kayteam.harimelteconomy.commands.BalanceCommand;
 import org.kayteam.harimelteconomy.commands.EconomyCommand;
+import org.kayteam.harimelteconomy.commands.PayCommand;
 import org.kayteam.harimelteconomy.economy.YamlEconomy;
 import org.kayteam.harimelteconomy.listeners.PlayerJoinListener;
 import org.kayteam.harimelteconomy.utils.yaml.Yaml;
@@ -58,13 +59,15 @@ public class HarimeltEconomy extends JavaPlugin {
         }
         getLogger().info("Vault found, Economy has been registered.");
         // Register Commands
-        // Commands
         EconomyCommand economyCommand = new EconomyCommand(this);
-        getCommand("SimpleEconomy").setExecutor(economyCommand);
-        getCommand("SimpleEconomy").setTabCompleter(economyCommand);
+        getCommand("Economy").setExecutor(economyCommand);
+        getCommand("Economy").setTabCompleter(economyCommand);
         BalanceCommand balanceCommand = new BalanceCommand(this);
         getCommand("Balance").setExecutor(balanceCommand);
         getCommand("Balance").setTabCompleter(balanceCommand);
+        PayCommand payCommand = new PayCommand(this);
+        getCommand("Pay").setExecutor(payCommand);
+        getCommand("Pay").setTabCompleter(payCommand);
         // Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
