@@ -99,8 +99,8 @@ public class Yaml {
             }
         }
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        if (javaPlugin.getResource(name) != null){
-            Reader defConfigStream = new InputStreamReader(javaPlugin.getResource(name), StandardCharsets.UTF_8);
+        if (javaPlugin.getResource(name + ".yml") != null){
+            Reader defConfigStream = new InputStreamReader(javaPlugin.getResource(name + ".yml"), StandardCharsets.UTF_8);
             YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
             fileConfiguration.setDefaults(defConfig);
         }
