@@ -7,35 +7,23 @@ softdepend:
   - PlaceholderAPI
 
 commands:
-  SimpleEconomy:
-    aliases:
-      - eco
-      - simpleeco
-      - money
-  balance:
-    aliases:
-      - dinero
-  balancetop:
-    aliases:
-      - topdinero
-  pay:
-    aliases:
-      - pagar
+  Economy:
+    description: "Manage users balance"
+  Balance:
+    description: "See your balance and others players balance"
+  Pay:
+    description: "Pay others players"
 
 permissions:
-  economy.command.balance:
-    default: true
-  economy.command.balancetop:
-    default: true
-  economy.command.help:
-    default: true
-  economy.command.pay:
-    default: true
-  economy.command.give:
+  HarimeltEconomy.Economy:
     default: op
-  economy.command.take:
+  HarimeltEconomy.Economy.Give:
     default: op
-  economy.command.set:
+  HarimeltEconomy.Economy.Take:
     default: op
-  economy.command.reload:
+  HarimeltEconomy.Economy.Set:
     default: op
+  HarimeltEconomy.Balance:
+    description: "See your balance"
+  HarimeltEconomy.Balance.Others:
+    description: "See others players balance"

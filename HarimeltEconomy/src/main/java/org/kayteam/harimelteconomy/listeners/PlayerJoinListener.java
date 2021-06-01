@@ -18,12 +18,14 @@
 package org.kayteam.harimelteconomy.listeners;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import org.kayteam.harimelteconomy.HarimeltEconomy;
+import org.kayteam.harimelteconomy.utils.yaml.Yaml;
 
 public class PlayerJoinListener implements Listener {
 
@@ -40,6 +42,11 @@ public class PlayerJoinListener implements Listener {
         if (economy.hasAccount(player)) {
             economy.createPlayerAccount(player);
         }
+        Yaml yaml = new Yaml(harimeltEconomy, "pepe", "prueba");
+        yaml.registerFileConfiguration();
+        FileConfiguration fileConfiguration = yaml.getFileConfiguration();
+        fileConfiguration.set("prueba", "Probando una cosa");
+        yaml.saveFileConfiguration();
     }
 
 }

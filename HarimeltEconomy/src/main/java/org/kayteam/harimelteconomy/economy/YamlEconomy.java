@@ -41,7 +41,7 @@ public class YamlEconomy implements Economy {
 
     @Override
     public String getName() {
-        return "SimpleEconomy";
+        return "HarimeltEconomy";
     }
 
     @Override

@@ -99,10 +99,11 @@ public class Yaml {
             }
         }
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        if (javaPlugin.getResource(name) != null){
+        if (javaPlugin.getResource(name + ".yml") != null){
             Reader defConfigStream = new InputStreamReader(javaPlugin.getResource(name + ".yml"), StandardCharsets.UTF_8);
             YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
             fileConfiguration.setDefaults(defConfig);
+            saveFileConfiguration();
         }
     }
 
@@ -110,9 +111,6 @@ public class Yaml {
      * Guarda el archivo
      */
     public void saveFileConfiguration() {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
         try {
             fileConfiguration.save(file);
         } catch (IOException e) {
@@ -124,9 +122,6 @@ public class Yaml {
      * Registra el archivo
      */
     public void registerFileConfiguration() {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
         file = new File(dir, name + ".yml");
         if (!file.exists()) {
             getFileConfiguration().options().copyDefaults(true);
