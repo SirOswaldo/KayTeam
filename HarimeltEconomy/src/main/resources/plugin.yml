@@ -1,0 +1,41 @@
+main: org.kayteam.harimelteconomy.HarimeltEconomy
+name: HarimeltEconomy
+version: 1.0
+author: SirOswaldo
+depend: [Vault]
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  SimpleEconomy:
+    aliases:
+      - eco
+      - simpleeco
+      - money
+  balance:
+    aliases:
+      - dinero
+  balancetop:
+    aliases:
+      - topdinero
+  pay:
+    aliases:
+      - pagar
+
+permissions:
+  economy.command.balance:
+    default: true
+  economy.command.balancetop:
+    default: true
+  economy.command.help:
+    default: true
+  economy.command.pay:
+    default: true
+  economy.command.give:
+    default: op
+  economy.command.take:
+    default: op
+  economy.command.set:
+    default: op
+  economy.command.reload:
+    default: op

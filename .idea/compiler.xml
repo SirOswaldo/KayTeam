@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="HarimeltEconomy" />
         <module name="MoreTags" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="HarimeltEconomy" target="8" />
       <module name="MoreTags" target="8" />
     </bytecodeTargetLevel>
   </component>

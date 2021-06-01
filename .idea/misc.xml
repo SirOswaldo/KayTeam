@@ -5,6 +5,8 @@
       <list>
         <option value="$PROJECT_DIR$/MorePrefixes/pom.xml" />
         <option value="$PROJECT_DIR$/MoreTags/pom.xml" />
+        <option value="$PROJECT_DIR$/SimpleEconomy/pom.xml" />
+        <option value="$PROJECT_DIR$/HarimeltEconomy/pom.xml" />
       </list>
     </option>
   </component>
