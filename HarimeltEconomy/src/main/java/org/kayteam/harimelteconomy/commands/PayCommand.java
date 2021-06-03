@@ -76,7 +76,7 @@ public class PayCommand implements CommandExecutor, TabCompleter {
                                     messages.sendMessage(player, path + "noMinimumPayment", new String[][] {{"%minimum%", minimum + ""}}, true);
                                 }
                             } catch (NumberFormatException e) {
-                                messages.sendMessage(player, path + "invalidAmount", new String[][] {{"%player%", name}, {"%amount%", amountString}}, true);
+                                messages.sendMessage(player, path + "invalidAmount", new String[][] {{"%amount%", amountString}}, true);
                             }
                         } else {
                             messages.sendMessage(player, path + "invalidPlayer", new String[][] {{"%player%", name}}, true);

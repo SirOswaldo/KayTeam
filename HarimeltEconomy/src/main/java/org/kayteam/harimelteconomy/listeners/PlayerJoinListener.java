@@ -39,8 +39,8 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         Economy economy = harimeltEconomy.getEconomy();
         if (!economy.hasAccount(player)) {
-            economy.createPlayerAccount(player);
-            economy.createBank(player.getName(), player);
+            economy.createPlayerAccount(player, "balance");
+            economy.createPlayerAccount(player, "bank");
         }
     }
 

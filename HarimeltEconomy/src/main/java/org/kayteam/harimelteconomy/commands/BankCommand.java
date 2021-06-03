@@ -17,6 +17,7 @@
 
 package org.kayteam.harimelteconomy.commands;
 
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,12 +39,6 @@ public class BankCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        /*
-        * /bank information
-        * /bank deposit [AMOUNT]
-        * /bank withdraw [AMOUNT]
-        * /bank help
-        */
         Yaml messages = harimeltEconomy.getMessages();
         String path = "bank.";
         if (commandSender instanceof Player) {
@@ -51,10 +46,19 @@ public class BankCommand implements CommandExecutor, TabCompleter {
             if (strings.length > 0) {
                 switch (strings[0].toLowerCase()) {
                     case "information":
+                        information(player);
+                        break;
                     case "deposit":
+                        deposit(player, strings);
+                        break;
                     case "withdraw":
+                        withdraw(player, strings);
+                        break;
                     case "help":
+                        messages.sendMessage(player, path + "help", true);
+                        break;
                     default:
+                        messages.sendMessage(player, path + "invalidOption", new String[][] {{"%option%", strings[0]}}, true);
                 }
             } else {
                 messages.sendMessage(player, path + "emptyOption", true);
@@ -64,6 +68,63 @@ public class BankCommand implements CommandExecutor, TabCompleter {
         }
         return true;
     }
+
+    private void information(Player player) {
+        Yaml messages = harimeltEconomy.getMessages();
+        String path = "bank.";
+        Economy economy = harimeltEconomy.getEconomy();
+        messages.sendMessage(player, path + "information", new String[][] {
+                {"%bank%", economy.getBalance(player, "bank") + ""}
+        }, true);
+    }
+
+    private void deposit(Player player, String[] strings) {
+        Yaml messages = harimeltEconomy.getMessages();
+        String path = "bank.deposit.";
+        if (strings.length > 1) {
+            String amountString = strings[1];
+            try {
+                double amount = Double.parseDouble(amountString);
+                Economy economy = harimeltEconomy.getEconomy();
+                if (economy.getBalance(player) >= amount) {
+                    economy.withdrawPlayer(player, "balance", amount);
+                    economy.depositPlayer(player, "bank", amount);
+                    messages.sendMessage(player, path + "amountDeposit", new String[][] {{"%amount%", amountString}, {"%bank%", economy.getBalance(player, "bank") + ""}}, true);
+                } else {
+                    messages.sendMessage(player, path + "noSufficientBalance", true);
+                }
+            } catch (NumberFormatException e) {
+                messages.sendMessage(player, path + "invalidAmount", new String[][] {{"%amount%", amountString}}, true);
+            }
+        } else {
+            messages.sendMessage(player, path + "emptyAmount", true);
+        }
+    }
+
+    private void withdraw(Player player, String[] strings) {
+        Yaml messages = harimeltEconomy.getMessages();
+        String path = "bank.withdraw.";
+        if (strings.length > 1) {
+            String amountString = strings[1];
+            try {
+                double amount = Double.parseDouble(amountString);
+                Economy economy = harimeltEconomy.getEconomy();
+                if (economy.getBalance(player, "bank") >= amount) {
+                    economy.withdrawPlayer(player, "bank", amount);
+                    economy.depositPlayer(player, "balance", amount);
+                    messages.sendMessage(player, path + "amountWithdraw", new String[][] {{"%amount%", amountString}, {"%bank%", economy.getBalance(player, "bank") + ""}}, true);
+                } else {
+                    messages.sendMessage(player, path + "noSufficientBalance", true);
+                }
+            } catch (NumberFormatException e) {
+                messages.sendMessage(player, path + "invalidAmount", new String[][] {{"%amount%", amountString}}, true);
+            }
+        } else {
+            messages.sendMessage(player, path + "emptyAmount", true);
+        }
+    }
+
+
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {

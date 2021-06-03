@@ -21,6 +21,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kayteam.harimelteconomy.commands.BalanceCommand;
+import org.kayteam.harimelteconomy.commands.BankCommand;
 import org.kayteam.harimelteconomy.commands.EconomyCommand;
 import org.kayteam.harimelteconomy.commands.PayCommand;
 import org.kayteam.harimelteconomy.economy.YamlEconomy;
@@ -68,6 +69,9 @@ public class HarimeltEconomy extends JavaPlugin {
         PayCommand payCommand = new PayCommand(this);
         getCommand("Pay").setExecutor(payCommand);
         getCommand("Pay").setTabCompleter(payCommand);
+        BankCommand BankCommand = new BankCommand(this);
+        getCommand("Bank").setExecutor(BankCommand);
+        getCommand("Bank").setTabCompleter(BankCommand);
         // Register Listeners
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }

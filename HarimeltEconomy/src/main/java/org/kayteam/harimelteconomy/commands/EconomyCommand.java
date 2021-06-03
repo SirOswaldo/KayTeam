@@ -101,7 +101,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         messages.sendMessage(commandSender, path + "invalidAmount", new String[][] {{"%amount%", amountString}}, true);
                     }
                 } else {
-                    messages.sendMessage(commandSender, path + "emptyAmount");
+                    messages.sendMessage(commandSender, path + "emptyAmount", true);
                 }
             } else {
                 messages.sendMessage(commandSender, path + "emptyPlayer", true);
@@ -141,7 +141,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         messages.sendMessage(commandSender, path + "invalidAmount", new String[][] {{"%amount%", amountString}}, true);
                     }
                 } else {
-                    messages.sendMessage(commandSender, path + "emptyAmount");
+                    messages.sendMessage(commandSender, path + "emptyAmount", true);
                 }
             } else {
                 messages.sendMessage(commandSender, path + "emptyPlayer", true);
@@ -183,7 +183,7 @@ public class EconomyCommand implements CommandExecutor, TabCompleter {
                         messages.sendMessage(commandSender, path + "invalidAmount", new String[][] {{"%amount%", amountString}}, true);
                     }
                 } else {
-                    messages.sendMessage(commandSender, path + "emptyAmount");
+                    messages.sendMessage(commandSender, path + "emptyAmount", true);
                 }
             } else {
                 messages.sendMessage(commandSender, path + "emptyPlayer", true);
