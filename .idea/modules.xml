@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HarimeltEconomy/HarimeltEconomy.iml" filepath="$PROJECT_DIR$/HarimeltEconomy/HarimeltEconomy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HarimeltKits/HarimeltKits.iml" filepath="$PROJECT_DIR$/HarimeltKits/HarimeltKits.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/KayTeam.iml" filepath="$PROJECT_DIR$/.idea/KayTeam.iml" />
       <module fileurl="file://$PROJECT_DIR$/MoreTags/MoreTags.iml" filepath="$PROJECT_DIR$/MoreTags/MoreTags.iml" />
     </modules>

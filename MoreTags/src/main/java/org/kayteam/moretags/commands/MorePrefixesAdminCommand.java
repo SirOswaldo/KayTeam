@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.kayteam.moretags.MoreTags;
 import org.kayteam.moretags.playerdata.PlayerData;
 import org.kayteam.moretags.playerdata.PlayerDataManager;
-import org.kayteam.moretags.tag.Tag;
 import org.kayteam.moretags.util.yaml.Yaml;
 
 import java.util.UUID;
@@ -51,9 +50,6 @@ public class MorePrefixesAdminCommand implements CommandExecutor {
                         moreTags.getMessages().reloadFileConfiguration();
                         // Storage
                         moreTags.setupStorage();
-                        // Tags
-                        moreTags.getTagManager().unloadAllTags();
-                        moreTags.getTagManager().loadAllTags();
                         // Online PlayerData
                         moreTags.getPlayerDataManager().unloadOnlinePlayerData();
                         moreTags.getPlayerDataManager().loadOnlinePlayerData();
@@ -80,34 +76,7 @@ public class MorePrefixesAdminCommand implements CommandExecutor {
                         }
                         break;
                     case "select":
-                        if (strings.length > 1) {
-                            String playerName = strings[1];
-                            Player player = moreTags.getServer().getPlayerExact(playerName);
-                            if (player != null) {
-                                if (strings.length > 2) {
-                                    String tagName = strings[2].toLowerCase();
-                                    if (moreTags.getTagManager().containTag(tagName)) {
-                                        PlayerDataManager playerDataManager = moreTags.getPlayerDataManager();
-                                        PlayerData playerData = playerDataManager.getPlayerData(player.getUniqueId());
-                                        if (!playerData.getTag().equals(tagName)) {
-                                            playerData.setTag(tagName);
-                                            messages.sendMessage(commandSender, path + "select.tagSelected", new String[][] {{"%tag%", tagName}, {"%player%", playerName}}, true);
-                                            messages.sendMessage(commandSender, path + "select.tagSelectedNotify", new String[][] {{"%tag%", tagName}}, true);
-                                        } else {
-                                            messages.sendMessage(commandSender, path + "select.alreadySelectedTag", new String[][] {{"%tag%", tagName}, {"%player%", playerName}}, true);
-                                        }
-                                    } else {
-                                        messages.sendMessage(commandSender, path + "select.invalidTag", new String[][] {{"%tag%", tagName}}, true);
-                                    }
-                                } else {
-                                    messages.sendMessage(commandSender, path + "select.emptyTag", true);
-                                }
-                            } else {
-                                messages.sendMessage(commandSender, path + "select.invalidPlayer", new String[][] {{"%player%", playerName}}, true);
-                            }
-                        } else {
-                            messages.sendMessage(commandSender, path + "select.emptyPlayer", true);
-                        }
+                        select(commandSender, strings);
                         break;
                     case "help":
                         messages.sendMessage(commandSender, path + "help", true);
@@ -122,6 +91,39 @@ public class MorePrefixesAdminCommand implements CommandExecutor {
             messages.sendMessage(commandSender, path + "noPermission", true);
         }
         return true;
+    }
+
+    private void select(CommandSender commandSender, String[] strings) {
+        Yaml messages = moreTags.getMessages();
+        String path = "moreTagsAdmin.select.";
+        if (strings.length > 1) {
+            String playerName = strings[1];
+            Player player = moreTags.getServer().getPlayerExact(playerName);
+            if (player != null) {
+                if (strings.length > 2) {
+                    String tag = strings[2].toLowerCase();
+                    if (moreTags.getConfiguration().getFileConfiguration().contains("tags." + tag)) {
+                        PlayerDataManager playerDataManager = moreTags.getPlayerDataManager();
+                        PlayerData playerData = playerDataManager.getPlayerData(player.getUniqueId());
+                        if (!playerData.getTag().equals(tag)) {
+                            playerData.setTag(tag);
+                            messages.sendMessage(commandSender, path + "tagSelected", new String[][] {{"%tag%", tag}, {"%player%", playerName}}, true);
+                            messages.sendMessage(commandSender, path + "tagSelectedNotify", new String[][] {{"%tag%", tag}}, true);
+                        } else {
+                            messages.sendMessage(commandSender, path + "select.alreadySelectedTag", new String[][] {{"%tag%", tag}, {"%player%", playerName}}, true);
+                        }
+                    } else {
+                        messages.sendMessage(commandSender, path + "select.invalidTag", new String[][] {{"%tag%", tag}}, true);
+                    }
+                } else {
+                    messages.sendMessage(commandSender, path + "select.emptyTag", true);
+                }
+            } else {
+                messages.sendMessage(commandSender, path + "select.invalidPlayer", new String[][] {{"%player%", playerName}}, true);
+            }
+        } else {
+            messages.sendMessage(commandSender, path + "select.emptyPlayer", true);
+        }
     }
 
 }

@@ -20,10 +20,10 @@ package org.kayteam.moretags.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.kayteam.moretags.MoreTags;
 import org.kayteam.moretags.playerdata.PlayerData;
-import org.kayteam.moretags.tag.Tag;
 import org.kayteam.moretags.util.yaml.Yaml;
 
 public class MorePrefixesCommand implements CommandExecutor {
@@ -47,35 +47,14 @@ public class MorePrefixesCommand implements CommandExecutor {
                             messages.sendMessage(player, path + "help", true);
                             break;
                         case "select":
-                            if (strings.length > 1) {
-                                String tag = strings[1].toLowerCase();
-                                if (moreTags.getTagManager().containTag(tag)) {
-                                    if (player.hasPermission("moretags.tag." + tag)) {
-                                        PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
-                                        if (!playerData.getTag().equals(tag)) {
-                                            playerData.setTag(tag);
-                                            messages.sendMessage(player, path + "select.tagSelected", new String[][] {{"%tag%", tag}}, true);
-                                        } else {
-                                            messages.sendMessage(player, path + "select.alreadySelectedTag", new String[][] {{"%tag%", tag}}, true);
-                                        }
-                                    } else {
-                                        messages.sendMessage(player, path + "select.noPermissionTag", new String[][] {{"%tag%", tag}}, true);
-                                    }
-                                } else {
-                                    messages.sendMessage(player, path + "select.invalidTag", new String[][] {{"%tag%", tag}}, true);
-                                }
-                            } else {
-                                messages.sendMessage(player, path + "select.emptyTag", true);
-                            }
+                            select(player, strings);
                             break;
                         case "clear":
                             moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId()).setTag("");
                             messages.sendMessage(player, path + "clear.tagCleared", true);
                             break;
                         case "info":
-                            PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
-                            Tag tag = moreTags.getTagManager().getTag(playerData.getTag());
-                            messages.sendMessage(player, path + "info", new String[][] {{"%tag%", playerData.getTag()}, {"%prefix%", tag.getPrefix()}, {"%suffix%", tag.getSuffix()}}, true);
+                            information(player);
                             break;
                         default:
                             messages.sendMessage(player, path + "invalidArguments", true);
@@ -90,5 +69,40 @@ public class MorePrefixesCommand implements CommandExecutor {
             messages.sendMessage(commandSender, path + "isConsole", true);
         }
         return true;
+    }
+
+    private void select(Player player, String[] strings) {
+        Yaml messages = moreTags.getMessages();
+        String path = "moreTags.select";
+        if (strings.length > 1) {
+            String tag = strings[1].toLowerCase();
+            FileConfiguration configuration = moreTags.getConfiguration().getFileConfiguration();
+            if (configuration.contains("tags." + tag)) {
+                if (player.hasPermission("moretags.tag." + tag)) {
+                    PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
+                    if (!playerData.getTag().equals(tag)) {
+                        playerData.setTag(tag);
+                        messages.sendMessage(player, path + "select.tagSelected", new String[][] {{"%tag%", tag}}, true);
+                    } else {
+                        messages.sendMessage(player, path + "select.alreadySelectedTag", new String[][] {{"%tag%", tag}}, true);
+                    }
+                } else {
+                    messages.sendMessage(player, path + "select.noPermissionTag", new String[][] {{"%tag%", tag}}, true);
+                }
+            } else {
+                messages.sendMessage(player, path + "select.invalidTag", new String[][] {{"%tag%", tag}}, true);
+            }
+        } else {
+            messages.sendMessage(player, path + "select.emptyTag", true);
+        }
+    }
+
+    private void information(Player player) {
+        Yaml messages = moreTags.getMessages();
+        String path = "moreTags.";
+        PlayerData playerData = moreTags.getPlayerDataManager().getPlayerData(player.getUniqueId());
+        String prefix = moreTags.getConfiguration().getFileConfiguration().getString("tags." + playerData.getTag() + ".prefix", "");
+        String suffix = moreTags.getConfiguration().getFileConfiguration().getString("tags." + playerData.getTag() + ".suffix", "");
+        messages.sendMessage(player, path + "information", new String[][] {{"%tag%", playerData.getTag()}, {"%prefix%", prefix}, {"%suffix%", suffix}}, true);
     }
 }

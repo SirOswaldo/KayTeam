@@ -49,7 +49,7 @@ moreTags:
     tagSelected: "%prefix% &fSeleccionaste el tag &2%tag%&f."
   clear:
     tagCleared: "%prefix% &fTu tag fue limpiado."
-  info:
+  information:
     - "%prefix%"
     - " &6Tag: %tag%"
     - " &6Prefix: %prefix%"

@@ -1,0 +1,41 @@
+main: org.kayteam.harimeltkits.HarimeltKits
+name: HarimeltKits
+version: 1.0.0
+api-version: 1.16
+commands:
+  HarimeltKitsAdmin:
+    description: "Manage HarimeltKits plugin"
+  CreateKit:
+    description: CreateKit
+  DeleteKit:
+    description: DeleteKit
+  EditKit:
+    description: EditKit
+  ListKit:
+    description: ListKit
+  ClaimKit:
+    description: ClaimKit
+permissions:
+  harimelt.*:
+    description: All
+    children:
+      harimelt.admin: true
+      harimelt.create.kit: true
+      harimelt.delete.kit: true
+      harimelt.edit.kit: true
+      harimelt.list.kit: true
+      harimelt.claim.kit: true
+  harimelt.admin:
+    description: Admin
+  harimelt.create.kit:
+    description: CreateKit
+  harimelt.delete.kit:
+    description: DeleteKit
+  harimelt.edit.kit:
+    description: EditKit
+  harimelt.list.kit:
+    description: ListKit
+  harimelt.claim.kit:
+    description: ClaimKit
+  harimelt.bypass.claim.time:
+    description: Bypass ClaimTime

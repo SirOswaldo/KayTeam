@@ -1,0 +1,15 @@
+default:
+  delay: 60
+inventory:
+  kitEditor:
+    title: "Editor de Kit"
+    items:
+      delay: ""
+      items: ""
+      save: ""
+      close: ""
+  itemsEditor:
+    title: "Editor de Items"
+    items:
+      save: ""
+      close: ""

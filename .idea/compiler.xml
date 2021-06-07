@@ -7,11 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="HarimeltEconomy" />
+        <module name="HarimeltKits" />
         <module name="MoreTags" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="HarimeltEconomy" target="8" />
+      <module name="HarimeltKits" target="8" />
       <module name="MoreTags" target="8" />
     </bytecodeTargetLevel>
   </component>

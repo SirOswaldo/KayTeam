@@ -15,34 +15,38 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.kayteam.moretags.tag;
+package org.kayteam.harimelt.kits.kit;
 
-public class Tag {
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Kit {
 
     private final String name;
-    private String prefix;
-    private String suffix;
-
-    public Tag(String name, String prefix, String suffix) {
-        this.name = name;
-        this.prefix = prefix;
-        this.suffix = suffix;
-    }
-
     public String getName() {
         return name;
     }
-    public String getPrefix() {
-        return prefix;
+
+    public Kit(String name) {
+        this.name = name;
     }
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+
+    private int claimTime = 0;
+    public int getClaimTime() {
+        return claimTime;
     }
-    public String getSuffix() {
-        return suffix;
+    public void setClaimTime(int claimTime) {
+        this.claimTime = claimTime;
     }
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
+
+    private List<ItemStack> items = new ArrayList<>();
+    public List<ItemStack> getItems() {
+        return items;
+    }
+    public void setItems(List<ItemStack> items) {
+        this.items = items;
     }
 
 }
