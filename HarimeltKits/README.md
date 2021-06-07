@@ -2,6 +2,10 @@
 <p>Comandos y Permisos</p>
 <table>
     <tr>
+        <td>All commands</td>
+        <td>harimelt.*</td>
+    </tr>
+    <tr>
         <td>Comando</td>
         <td>Permiso</td>
     </tr>
@@ -10,8 +14,23 @@
         <td>harimelt.admin</td>
     </tr>
     <tr>
-        <td>Comando</td>
-        <td>Permiso</td>
+        <td>/CreateKit</td>
+        <td>harimelt.create.kit</td>
     </tr>
-
+    <tr>
+        <td>/DeleteKit</td>
+        <td>harimelt.delete.kit</td>
+    </tr>
+    <tr>
+        <td>/EditKit</td>
+        <td>harimelt.edit.kit</td>
+    </tr>
+    <tr>
+        <td>/ListKit</td>
+        <td>harimelt.list.kit</td>
+    </tr>
+    <tr>
+        <td>/ClaimKit</td>
+        <td>harimelt.claim.kit</td>
+    </tr>
 </table>
