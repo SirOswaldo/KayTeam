@@ -33,4 +33,8 @@
         <td>/ClaimKit</td>
         <td>harimelt.claim.kit</td>
     </tr>
+    <tr>
+        <td>Can Claim Kit</td>
+        <td>harimelt.claim.kit.[KITNAME]</td>
+    </tr>
 </table>
