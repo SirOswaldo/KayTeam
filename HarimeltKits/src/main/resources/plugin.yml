@@ -1,7 +1,9 @@
-main: org.kayteam.harimeltkits.HarimeltKits
+main: org.kayteam.harimelt.kits.HarimeltKits
 name: HarimeltKits
 version: 1.0.0
 api-version: 1.16
+softdepend:
+  - PlaceholderAPI
 commands:
   HarimeltKits:
     description: "Manage HarimeltKits plugin"
