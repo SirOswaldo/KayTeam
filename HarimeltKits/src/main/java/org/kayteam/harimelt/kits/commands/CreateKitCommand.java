@@ -64,9 +64,9 @@ public class CreateKitCommand extends SimpleCommand {
                     Collections.addAll(items, player.getInventory().getContents());
                     kitManager.getKit(kitName).setItems(items);
                     kitManager.saveKit(kitName);
-                    messages.sendMessage(player, "CreateKit.kitCreated", new String[][] {{"%kit.name%"}});
+                    messages.sendMessage(player, "CreateKit.kitCreated", new String[][] {{"%kit.name%", kitName}});
                 } else {
-                    messages.sendMessage(player, "CreateKit.kitAlreadyExist", new String[][] {{"%kit.name%"}});
+                    messages.sendMessage(player, "CreateKit.kitAlreadyExist", new String[][] {{"%kit.name%", kitName}});
                 }
             } else {
                 messages.sendMessage(player, "CreateKit.kitNameEmpty");

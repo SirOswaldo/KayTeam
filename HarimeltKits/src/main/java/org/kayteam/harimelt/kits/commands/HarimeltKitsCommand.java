@@ -50,6 +50,7 @@ public class HarimeltKitsCommand extends SimpleCommand {
                         break;
                     case "help":
                         messages.sendMessage(player, "Admin.help");
+                        break;
                     default:
                         messages.sendMessage(player, "Admin.optionIsInvalid");
                 }
@@ -78,6 +79,7 @@ public class HarimeltKitsCommand extends SimpleCommand {
                     break;
                 case "help":
                     messages.sendMessage(console, "Admin.help");
+                    break;
                 default:
                     messages.sendMessage(console, "Admin.optionIsInvalid");
             }

@@ -19,15 +19,15 @@ package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
+
+import java.util.Objects;
 
 
 public class ClaimKitCommand extends SimpleCommand {
@@ -59,7 +59,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                     if (player.getInventory().firstEmpty() != -1) {
                                         player.getInventory().addItem(itemStack);
                                     } else {
-                                        player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
+                                        Objects.requireNonNull(player.getLocation().getWorld()).dropItem(player.getLocation(), itemStack);
                                     }
                                 }
                                 messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
@@ -74,7 +74,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                     if (player.getInventory().firstEmpty() != -1) {
                                         player.getInventory().addItem(itemStack);
                                     } else {
-                                        player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
+                                        Objects.requireNonNull(player.getLocation().getWorld()).dropItem(player.getLocation(), itemStack);
                                     }
                                 }
                                 messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
@@ -89,7 +89,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                         if (player.getInventory().firstEmpty() != -1) {
                                             player.getInventory().addItem(itemStack);
                                         } else {
-                                            player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
+                                            Objects.requireNonNull(player.getLocation().getWorld()).dropItem(player.getLocation(), itemStack);
                                         }
                                     }
                                     messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});

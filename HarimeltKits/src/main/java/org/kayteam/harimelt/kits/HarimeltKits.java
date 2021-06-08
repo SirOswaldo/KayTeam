@@ -54,7 +54,7 @@ public class HarimeltKits extends JavaPlugin {
     @Override
     public void onEnable() {
         // Files
-        configuration.reloadFileConfiguration();
+        configuration.registerFileConfiguration();
         messages.registerFileConfiguration();
         // Commands
         HarimeltKitsCommand harimeltKitsCommand = new HarimeltKitsCommand(this);

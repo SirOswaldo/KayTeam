@@ -17,29 +17,17 @@
 
 package org.kayteam.harimelt.kits.utils.command;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.*;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
 
-    private final JavaPlugin javaPlugin;
-    private final String command;
 
     public SimpleCommand(JavaPlugin javaPlugin, String command) {
-        this.javaPlugin = javaPlugin;
-        this.command = command;
-    }
-
-    public void registerCommand() {
         PluginCommand pluginCommand = javaPlugin.getCommand(command);
         if (pluginCommand != null) {
             pluginCommand.setExecutor(this);
@@ -49,7 +37,7 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, String s, String[] arguments) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] arguments) {
         if (commandSender instanceof Player) {
             return onPlayerExecute((Player) commandSender, command, arguments);
         } else {
@@ -60,7 +48,7 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
     public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) { return true;}
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, String s, String[] arguments) {
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] arguments) {
         if (commandSender instanceof Player) {
             return onPlayerTabComplete((Player) commandSender, command, arguments);
         } else {

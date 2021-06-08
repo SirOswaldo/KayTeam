@@ -18,7 +18,6 @@
 package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.kayteam.harimelt.kits.HarimeltKits;

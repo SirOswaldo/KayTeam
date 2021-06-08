@@ -153,7 +153,7 @@ public class Yaml {
                 if (fileConfiguration.contains("prefix") && fileConfiguration.isString("prefix")) {
                     message = message.replaceAll("%prefix%", Objects.requireNonNull(fileConfiguration.getString("prefix")));
                 }
-                for (String[] values: replacements){
+                for (String[] values:replacements){
                     message = message.replaceAll(values[0], values[1]);
                 }
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
@@ -167,7 +167,7 @@ public class Yaml {
                 if (fileConfiguration.contains("prefix") && fileConfiguration.isString("prefix")) {
                     message = message.replaceAll("%prefix%", Objects.requireNonNull(fileConfiguration.getString("prefix")));
                 }
-                for (String[] values: replacements){
+                for (String[] values:replacements){
                     message = message.replaceAll(values[0], values[1]);
                 }
                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
