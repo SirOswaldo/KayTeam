@@ -18,65 +18,69 @@
 package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.kayteam.harimelt.kits.HarimeltKits;
-import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CreateKitCommand extends SimpleCommand {
 
-    public CreateKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "CreateKit", "harimelt.create.kit");
+    private final HarimeltKits plugin;
+
+    public CreateKitCommand(HarimeltKits plugin) {
+        super(plugin, "CreateKit");
+        this.plugin = plugin;
     }
 
     @Override
-    public void onCommand(CommandSender sender, String command, String[] strings) {
-        if (isPlayer(sender)) {
-            if (strings.length > 0) {
-                String name = strings[0];
-                KitManager kitManager = getHarimeltKits().getKitManager();
-                if (!kitManager.existKit(name)) {
-                    if (strings.length > 1) {
-                        String claimTimeString = strings[1];
+    public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
+        Yaml messages = plugin.getMessages();
+        if (player.hasPermission("harimelt.create.kit")) {
+            if (arguments.length > 0) {
+                KitManager kitManager = plugin.getKitManager();
+                String kitName = arguments[0];
+                if (kitManager.existKit(kitName)) {
+                    int claimTime = 0;
+                    if (arguments.length > 1) {
                         try {
-                            int claimTime = Integer.parseInt(claimTimeString);
-                            if (claimTime >= 0) {
-                                kitManager.createKit(name, claimTime);
-                                Kit kit = kitManager.getKit(name);
-                                Player player = getPlayer(sender);
-                                kit.setItems(new ArrayList<>(Arrays.asList(player.getInventory().getContents())));
-                                kitManager.saveKit(name);
-                                sendMessage(sender, "CreateKit.createComplete", new String[][] {{"%command%", getCommand()}, {"%name%", name}, {"%time%", claimTimeString}});
-                            } else {
-                                sendMessage(sender, "CreateKit.negativeClaimTime", new String[][] {{"%command%", getCommand()}, {"%name%", name}, {"%time%", claimTimeString}});
+                            claimTime = Integer.parseInt(arguments[1]);
+                            if (claimTime < 0) {
+                                claimTime = 0;
+                                messages.sendMessage(player, "CreateKit.claimTimeIsNegative");
                             }
-                        } catch (NumberFormatException e) {
-                            sendMessage(sender, "CreateKit.invalidClaimTime", new String[][] {{"%command%", getCommand()}, {"%name%", name}, {"%time%", claimTimeString}});
+                        } catch (NumberFormatException ignored) {
+                            messages.sendMessage(player, "CreateKit.claimTimeContainIllegalChars");
                         }
-                    } else {
-                        kitManager.createKit(name, 0);
-                        sendMessage(sender, "CreateKit.createComplete", new String[][] {{"%command%", getCommand()}, {"%name%", name}});
                     }
+                    kitManager.createKit(kitName, claimTime);
+                    List<ItemStack> items = new ArrayList<>();
+                    Collections.addAll(items, player.getInventory().getContents());
+                    kitManager.getKit(kitName).setItems(items);
+                    kitManager.saveKit(kitName);
+                    messages.sendMessage(player, "CreateKit.kitCreated", new String[][] {{"%kit.name%"}});
                 } else {
-                    sendMessage(sender, "CreateKit.invalidName", new String[][] {{"%command%", getCommand()}, {"%name%", name}});
+                    messages.sendMessage(player, "CreateKit.kitAlreadyExist", new String[][] {{"%kit.name%"}});
                 }
             } else {
-                sendMessage(sender, "CreateKit.emptyName", new String[][] {{"%command%", getCommand()}});
+                messages.sendMessage(player, "CreateKit.kitNameEmpty");
             }
         } else {
-            sendMessage(sender, "CreateKit.isConsole", new String[][] {{"%command%", getCommand()}});
+            messages.sendMessage(player, "CreateKit.noPermission");
         }
+        return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String[] strings) {
-        return new ArrayList<>();
+    public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
+        Yaml messages = plugin.getMessages();
+        messages.sendMessage(console, "CreateKit.isConsole");
+        return true;
     }
 }

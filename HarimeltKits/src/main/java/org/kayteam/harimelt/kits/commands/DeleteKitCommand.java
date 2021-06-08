@@ -19,40 +19,60 @@ package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 public class DeleteKitCommand extends SimpleCommand {
 
-    public DeleteKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "DeleteKit", "harimelt.delete.kit");
+    private final HarimeltKits plugin;
+
+    public DeleteKitCommand(HarimeltKits plugin) {
+        super(plugin, "DeleteKit");
+        this.plugin = plugin;
     }
 
     @Override
-    public void onCommand(CommandSender commandSender, String command, String[] strings) {
-        if (strings.length > 0) {
-            String name = strings[0];
-            KitManager kitManager = getHarimeltKits().getKitManager();
-            if (kitManager.existKit(name)) {
-                kitManager.deleteKit(name);
-                sendMessage(commandSender, "DeleteKit.deleteComplete", new String[][] {{"%command%", getCommand()}, {"%name%", name}});
+    public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
+        Yaml messages = plugin.getMessages();
+        if (player.hasPermission("harimelt.delete.kit")) {
+            if (arguments.length > 0) {
+                KitManager kitManager = plugin.getKitManager();
+                String kitName = arguments[0];
+                if (kitManager.existKit(kitName)) {
+                    kitManager.deleteKit(kitName);
+                    messages.sendMessage(player, "DeleteKit.kitDeleted", new String[][] {{"%kit.name%", kitName}});
+                } else {
+                    messages.sendMessage(player, "DeleteKit.kitNoExist", new String[][] {{"%kit.name%", kitName}});
+                }
             } else {
-                sendMessage(commandSender, "DeleteKit.invalidName", new String[][] {{"%command%", getCommand()}, {"%name%", name}});
+                messages.sendMessage(player, "DeleteKit.kitNameEmpty");
             }
         } else {
-            sendMessage(commandSender, "DeleteKit.emptyName", new String[][] {{"%command%", getCommand()}});
+            messages.sendMessage(player, "DeleteKit.noPermission");
         }
+        return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String[] strings) {
-        if (strings.length == 0) {
-            return getHarimeltKits().getKitManager().getKitsNames();
+    public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
+        Yaml messages = plugin.getMessages();
+        if (arguments.length > 0) {
+            KitManager kitManager = plugin.getKitManager();
+            String kitName = arguments[0];
+            if (kitManager.existKit(kitName)) {
+                kitManager.deleteKit(kitName);
+                messages.sendMessage(console, "DeleteKit.kitDeleted", new String[][] {{"%kit.name%", kitName}});
+            } else {
+                messages.sendMessage(console, "DeleteKit.kitNoExist", new String[][] {{"%kit.name%", kitName}});
+            }
+        } else {
+            messages.sendMessage(console, "DeleteKit.kitNameEmpty");
         }
-        return new ArrayList<>();
+        return true;
     }
+
 }

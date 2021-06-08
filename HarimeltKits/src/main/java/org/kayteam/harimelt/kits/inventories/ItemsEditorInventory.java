@@ -41,7 +41,7 @@ public class ItemsEditorInventory implements Listener {
     private final HarimeltKits harimeltKits;
     private String title;
     private String panel;
-    private String close;
+    private String cancel;
     private String save;
 
     public ItemsEditorInventory(HarimeltKits harimeltKits) {
@@ -49,7 +49,7 @@ public class ItemsEditorInventory implements Listener {
         FileConfiguration configuration = harimeltKits.getConfiguration().getFileConfiguration();
         title = ChatColor.translateAlternateColorCodes('&', configuration.getString("inventory.kitEditor.title", ""));
         panel = configuration.getString("inventory.itemsEditor.items.panel");
-        close = configuration.getString("inventory.itemsEditor.items.close");
+        cancel = configuration.getString("inventory.itemsEditor.items.cancel");
         save = configuration.getString("inventory.itemsEditor.items.save");
     }
 
@@ -69,7 +69,7 @@ public class ItemsEditorInventory implements Listener {
             }
         }
         // Buttons
-        inventory.setItem(37, ItemStackUtil.parseString(close));
+        inventory.setItem(37, ItemStackUtil.parseString(cancel));
         inventory.setItem(43, ItemStackUtil.parseString(save));
         return inventory;
     }

@@ -17,14 +17,14 @@
 
 package org.kayteam.harimelt.kits.utils.yaml;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.kayteam.harimelt.kits.utils.papi.PlaceholderAPIUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 
@@ -48,22 +49,57 @@ public class Yaml {
         this.dir = javaPlugin.getDataFolder().getPath();
         this.name = name;
     }
-
     public Yaml(JavaPlugin javaPlugin, String dir, String name){
         this.javaPlugin = javaPlugin;
         this.dir = javaPlugin.getDataFolder().getPath() + File.separator + dir;
         this.name = name;
     }
 
-
-    public boolean existFileConfiguration(){
-        file = new File(dir, name + ".yml");
-        return file.exists();
+    public FileConfiguration getFileConfiguration() {
+        if (fileConfiguration == null) {
+            reloadFileConfiguration();
+        }
+        return fileConfiguration;
     }
-
-    /**
-     * Borrar el archivo
-     */
+    public void reloadFileConfiguration() {
+        if (fileConfiguration == null) {
+            file = new File(dir, name + ".yml");
+            File dirFile = new File(dir);
+            if (!dirFile.exists()) {
+                if (dirFile.mkdir()) {
+                    javaPlugin.getLogger().info("The directory '" + dir +"' has been created.");
+                }
+            }
+            try{
+                if (file.createNewFile()) {
+                    javaPlugin.getLogger().info("The file '" + name +".yml' has been created.");
+                }
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        fileConfiguration = YamlConfiguration.loadConfiguration(file);
+        if (javaPlugin.getResource(name + ".yml") != null){
+            Reader defConfigStream = new InputStreamReader(Objects.requireNonNull(javaPlugin.getResource(name + ".yml")), StandardCharsets.UTF_8);
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+            fileConfiguration.setDefaults(defConfig);
+            saveFileConfiguration();
+        }
+    }
+    public void saveFileConfiguration() {
+        try {
+            fileConfiguration.save(file);
+        } catch (IOException e) {
+            javaPlugin.getLogger().log(Level.SEVERE, "No se pudo guardar el archivo.");
+        }
+    }
+    public void registerFileConfiguration() {
+        file = new File(dir, name + ".yml");
+        if (!file.exists()) {
+            getFileConfiguration().options().copyDefaults(true);
+            saveFileConfiguration();
+        }
+    }
     public boolean deleteFileConfiguration(){
         file = new File(dir, name + ".yml");
         if (file.exists()) {
@@ -72,81 +108,28 @@ public class Yaml {
         return false;
     }
 
-    /**
-     * Obtener el archivo de configuracion
-     * @return fileConfiguration
-     */
-    public FileConfiguration getFileConfiguration() {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        return fileConfiguration;
-    }
-
-    /**
-     * Recarga el archivo
-     */
-    public void reloadFileConfiguration() {
-        if (fileConfiguration == null) {
-            file = new File(dir, name + ".yml");
-            File dirFile = new File(dir);
-            if (dirFile.exists()){
-                dirFile.mkdir();
-                try{
-                    file.createNewFile();
-                } catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        if (javaPlugin.getResource(name + ".yml") != null){
-            Reader defConfigStream = new InputStreamReader(javaPlugin.getResource(name + ".yml"), StandardCharsets.UTF_8);
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-            fileConfiguration.setDefaults(defConfig);
-            saveFileConfiguration();
-        }
-    }
-
-    /**
-     * Guarda el archivo
-     */
-    public void saveFileConfiguration() {
-        try {
-            fileConfiguration.save(file);
-        } catch (IOException e) {
-            javaPlugin.getLogger().log(Level.SEVERE, "No se pudo guardar el archivo.");
-        }
-    }
-
-    /**
-     * Registra el archivo
-     */
-    public void registerFileConfiguration() {
+    public boolean existFileConfiguration(){
         file = new File(dir, name + ".yml");
-        if (!file.exists()) {
-            getFileConfiguration().options().copyDefaults(true);
-            saveFileConfiguration();
-        }
-        //Bukkit.getLogger().info("Registered [FILE] ("+dir+")/("+name+")");
+        return file.exists();
     }
-
-
     public void generateBackup() {
         file = new File(dir, "backup-" + name + ".yml");
         File dirFile = new File(dir);
-        if (dirFile.exists()){
-            dirFile.mkdir();
-            try{
-                file.createNewFile();
-            } catch (IOException e){
-                e.printStackTrace();
+        if (!dirFile.exists()) {
+            if (dirFile.mkdir()) {
+                javaPlugin.getLogger().info("The directory '" + dir +"' has been created.");
             }
+        }
+        try{
+            if (file.createNewFile()) {
+                javaPlugin.getLogger().info("The file 'backup-" + name +".yml' has been created.");
+            }
+        } catch (IOException e){
+            e.printStackTrace();
         }
         FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(file);
         fileConfig.setDefaults(fileConfiguration);
     }
-
     public void saveWithOtherFileConfiguration(FileConfiguration fileConfiguration) {
         try {
             fileConfiguration.save(file);
@@ -155,267 +138,55 @@ public class Yaml {
         }
     }
 
-    public void sendMessage(Player player, String path) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
-    }
-    public void sendMessage(Player player, String path, boolean prefix) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                    if (prefix) {
-                        if (fileConfiguration.contains("prefix")) {
-                            if (fileConfiguration.isString("prefix")) {
-                                message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                            }
-                        }
-                    }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                if (prefix) {
-                    if (fileConfiguration.contains("prefix")) {
-                        if (fileConfiguration.isString("prefix")) {
-                            message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                        }
-                    }
-                }
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
-    }
-    public void sendMessage(Player player, String path, String[][] replacements) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    for (String[] values: replacements){
-                        message = message.replaceAll(values[0], values[1]);
-                    }
-                    message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                for (String[] values: replacements){
-                    message = message.replaceAll(values[0], values[1]);
-                }
-                message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
-    }
-    public void sendMessage(Player player, String path, String[][] replacements, boolean prefix) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    for (String[] values: replacements){
-                        message = message.replaceAll(values[0], values[1]);
-                    }
-                    message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                    if (prefix) {
-                        if (fileConfiguration.contains("prefix")) {
-                            if (fileConfiguration.isString("prefix")) {
-                                message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                            }
-                        }
-                    }
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                for (String[] values: replacements){
-                    message = message.replaceAll(values[0], values[1]);
-                }
-                message = PlaceholderAPIUtil.addPlaceholders(player, message);
-                if (prefix) {
-                    if (fileConfiguration.contains("prefix")) {
-                        if (fileConfiguration.isString("prefix")) {
-                            message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                        }
-                    }
-                }
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
-    }
-
     public void sendMessage(CommandSender commandSender, String path) {
-        if (commandSender instanceof Player) {
-            sendMessage((Player) commandSender, path);
-        } else {
-            sendMessage((ConsoleCommandSender) commandSender, path);
-        }
-    }
-    public void sendMessage(CommandSender commandSender, String path, boolean prefix) {
-        if (commandSender instanceof Player) {
-            sendMessage((Player) commandSender, path, prefix);
-        } else {
-            sendMessage((ConsoleCommandSender) commandSender, path, prefix);
-        }
+        sendMessage(commandSender, path, new String[][] {});
     }
     public void sendMessage(CommandSender commandSender, String path, String[][] replacements) {
-        if (commandSender instanceof Player) {
-            sendMessage((Player) commandSender, path, replacements);
+        if (fileConfiguration == null) return;
+        if (!fileConfiguration.contains(path)) return;
+        if (fileConfiguration.isList(path)) {
+            List<String> messages = fileConfiguration.getStringList(path);
+            for (String message:messages) {
+                if (commandSender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                    message = PlaceholderAPI.setPlaceholders((Player) commandSender, message);
+                }
+                if (fileConfiguration.contains("prefix") && fileConfiguration.isString("prefix")) {
+                    message = message.replaceAll("%prefix%", Objects.requireNonNull(fileConfiguration.getString("prefix")));
+                }
+                for (String[] values: replacements){
+                    message = message.replaceAll(values[0], values[1]);
+                }
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+            }
         } else {
-            sendMessage((ConsoleCommandSender) commandSender, path, replacements);
-        }
-    }
-    public void sendMessage(CommandSender commandSender, String path, String[][] replacements, boolean prefix) {
-        if (commandSender instanceof Player) {
-            sendMessage((Player) commandSender, path, replacements, prefix);
-        } else {
-            sendMessage((ConsoleCommandSender) commandSender, path, replacements, prefix);
+            String message = fileConfiguration.getString(path);
+            if (message != null) {
+                if (commandSender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+                    message = PlaceholderAPI.setPlaceholders((Player) commandSender, message);
+                }
+                if (fileConfiguration.contains("prefix") && fileConfiguration.isString("prefix")) {
+                    message = message.replaceAll("%prefix%", Objects.requireNonNull(fileConfiguration.getString("prefix")));
+                }
+                for (String[] values: replacements){
+                    message = message.replaceAll(values[0], values[1]);
+                }
+                commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+            }
         }
     }
 
-    public void sendMessage(ConsoleCommandSender consoleCommandSender, String path) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
+    // Default
+    public void set(String path, Object value) { fileConfiguration.set(path, value); }
+    public boolean contains(String path) { return fileConfiguration.contains(path); }
+    public boolean isBoolean(String path) { return fileConfiguration.isBoolean(path); }
+    public boolean getBoolean(String path) {
+        return fileConfiguration.getBoolean(path);
     }
-    public void sendMessage(ConsoleCommandSender consoleCommandSender, String path, boolean prefix) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    if (prefix) {
-                        if (fileConfiguration.contains("prefix")) {
-                            if (fileConfiguration.isString("prefix")) {
-                                message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                            }
-                        }
-                    }
-                    consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
+    public boolean getBoolean(String path, boolean def) {
+        return fileConfiguration.getBoolean(path, def);
     }
-    public void sendMessage(ConsoleCommandSender consoleCommandSender, String path, String[][] replacements) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    for (String[] values: replacements){
-                        message = message.replaceAll(values[0], values[1]);
-                    }
-                    consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                for (String[] values: replacements){
-                    message = message.replaceAll(values[0], values[1]);
-                }
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
-    }
-    public void sendMessage(ConsoleCommandSender consoleCommandSender, String path, String[][] replacements, boolean prefix) {
-        if (fileConfiguration == null) {
-            reloadFileConfiguration();
-        }
-        if (fileConfiguration.contains(path)) {
-            if (fileConfiguration.isList(path)) {
-                List<String> messages = fileConfiguration.getStringList(path);
-                for (String message:messages) {
-                    for (String[] values: replacements){
-                        message = message.replaceAll(values[0], values[1]);
-                    }
-                    if (prefix) {
-                        if (fileConfiguration.contains("prefix")) {
-                            if (fileConfiguration.isString("prefix")) {
-                                message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                            }
-                        }
-                    }
-                    consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-                }
-            } else {
-                String message = fileConfiguration.getString(path);
-                for (String[] values: replacements){
-                    message = message.replaceAll(values[0], values[1]);
-                }
-                if (prefix) {
-                    if (fileConfiguration.contains("prefix")) {
-                        if (fileConfiguration.isString("prefix")) {
-                            message = message.replaceAll("%prefix%", fileConfiguration.getString("prefix"));
-                        }
-                    }
-                }
-                consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-            }
-        } else {
-            javaPlugin.getLogger().info("Path '" + path + "' no found in the '" + name + ".yml' file");
-            consoleCommandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cContact any admin."));
-        }
-    }
+    public boolean isInt(String path) { return fileConfiguration.isInt(path); }
+    public int getInt(String path) { return fileConfiguration.getInt(path); }
+    public int getInt(String path, int def) { return fileConfiguration.getInt(path, def); }
+
 }

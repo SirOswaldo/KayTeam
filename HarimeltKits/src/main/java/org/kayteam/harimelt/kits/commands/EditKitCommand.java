@@ -18,53 +18,50 @@
 package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.inventories.MenuEditorInventory;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 public class EditKitCommand extends SimpleCommand {
 
-    public EditKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "KitEdit", "harimelt.kitedit");
+    private final HarimeltKits plugin;
+
+    public EditKitCommand(HarimeltKits plugin) {
+        super(plugin, "EditKit");
+        this.plugin = plugin;
     }
 
     @Override
-    public void onCommand(CommandSender commandSender, String command, String[] strings) {
-        if (isPlayer(commandSender)) {
-            if (strings.length > 0) {
-                String name = strings[0];
-                KitManager kitManager = getHarimeltKits().getKitManager();
-                if (kitManager.existKit(name)) {
-                    Player player = getPlayer(commandSender);
-                    UUID uuid = player.getUniqueId();
-                    MenuEditorInventory menuEditorInventory = new MenuEditorInventory(getHarimeltKits());
-                    getHarimeltKits().getEditing().put(uuid, "MENU:" + name);
-                    player.openInventory(menuEditorInventory.getInventory(name));
+    public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
+        Yaml messages = plugin.getMessages();
+        if (player.hasPermission("harimelt.edit.kit")) {
+            if (arguments.length > 0) {
+                KitManager kitManager = plugin.getKitManager();
+                String kitName = arguments[0];
+                if (kitManager.existKit(kitName)) {
+                    MenuEditorInventory menuEditorInventory = new MenuEditorInventory(plugin);
+                    plugin.getEditing().put(player.getUniqueId(), "MENU:" + kitName);
+                    player.openInventory(menuEditorInventory.getInventory(kitName));
                 } else {
-                    sendMessage(commandSender, "EditKit.invalidName", new String[][] {{"%command%", getCommand()}, {"%name%", name}});
+                    messages.sendMessage(player, "EditKit.kitNoExist", new String[][] {{"%kit.name%", kitName}});
                 }
             } else {
-                sendMessage(commandSender, "EditKit.emptyName", new String[][] {{"%command%", getCommand()}});
+                messages.sendMessage(player, "EditKit.kitNameEmpty");
             }
         } else {
-            sendMessage(commandSender, "EditKit.isConsole", new String[][] {{"%command%", getCommand()}});
+            messages.sendMessage(player, "EditKit.noPermission");
         }
+        return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String[] strings) {
-        if (strings.length == 0) {
-            return getHarimeltKits().getKitManager().getKitsNames();
-        }
-        return new ArrayList<>();
+    public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
+        Yaml messages = plugin.getMessages();
+        messages.sendMessage(console, "EditKit.isConsole");
+        return true;
     }
-
-
 }

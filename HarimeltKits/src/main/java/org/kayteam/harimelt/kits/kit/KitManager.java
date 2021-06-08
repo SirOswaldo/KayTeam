@@ -18,7 +18,6 @@
 package org.kayteam.harimelt.kits.kit;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
@@ -28,7 +27,6 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class KitManager {
 
@@ -101,7 +99,7 @@ public class KitManager {
         Yaml yaml = new Yaml(harimeltKits, "kits", name);
         yaml.registerFileConfiguration();
         FileConfiguration configuration = yaml.getFileConfiguration();
-        configuration.set("delay", kit.getClaimTime());
+        configuration.set("claim-time", kit.getClaimTime());
         configuration.set("items", kit.getItems());
         yaml.saveFileConfiguration();
     }
@@ -110,30 +108,19 @@ public class KitManager {
         return kits.containsKey(name);
     }
 
-    public void createKit(String name) {
-        Yaml yaml = new Yaml(harimeltKits, "kits", name);
-        yaml.registerFileConfiguration();
-        FileConfiguration kit = yaml.getFileConfiguration();
-        FileConfiguration configuration = harimeltKits.getConfiguration().getFileConfiguration();
-        kit.set("delay", configuration.getInt("default.delay", 60));
-        yaml.saveFileConfiguration();
-    }
-
     public void createKit(String name, int delay) {
         Yaml yaml = new Yaml(harimeltKits, "kits", name);
         yaml.registerFileConfiguration();
         FileConfiguration kit = yaml.getFileConfiguration();
-        kit.set("delay", delay);
+        kit.set("claim-time", delay);
         yaml.saveFileConfiguration();
     }
 
-    public boolean deleteKit(String name) {
+    public void deleteKit(String name) {
         Yaml yaml = new Yaml(harimeltKits, "kits", name);
         if (yaml.deleteFileConfiguration()) {
             kits.remove(name);
-            return true;
         }
-        return false;
     }
 
     public Kit getKit(String name) {
@@ -142,51 +129,6 @@ public class KitManager {
 
     public List<String> getKitsNames() {
         return new ArrayList<>(kits.keySet());
-    }
-
-    // Utility
-    public boolean canClaim(Player player, String kitName) {
-        if (!player.hasPermission("harimelt.claim." + kitName)) return false;
-        Yaml yaml = new Yaml(harimeltKits, "players", player.getName());
-        yaml.registerFileConfiguration();
-        FileConfiguration file = yaml.getFileConfiguration();
-        Kit kit = kits.get(kitName);
-        if (!file.contains(kitName)) {
-            return true;
-        } else {
-            int lastClaim = file.getInt(kitName);
-            int currentTime = (int) (System.currentTimeMillis() / 1000);
-            int claimTime = kit.getClaimTime();
-            return currentTime - lastClaim > claimTime;
-        }
-    }
-
-    public boolean canClaimOneTime(Player player, String kitName) {
-        if (!player.hasPermission("harimelt.claim." + kitName)) return false;
-        Yaml yaml = new Yaml(harimeltKits, "players", player.getName());
-        yaml.registerFileConfiguration();
-        FileConfiguration file = yaml.getFileConfiguration();
-        Kit kit = kits.get(kitName);
-        return file.contains(kitName);
-    }
-
-    public void updateClaimTime(Player player, String kitName) {
-        Yaml yaml = new Yaml(harimeltKits, "players", player.getName());
-        yaml.registerFileConfiguration();
-        FileConfiguration file = yaml.getFileConfiguration();
-        file.set(kitName, System.currentTimeMillis() / 1000);
-        yaml.saveFileConfiguration();
-    }
-
-    public void claimKit(Player player, String kitName) {
-        Kit kit = kits.get(kitName);
-        for (ItemStack itemStack:kit.getItems()) {
-            if (player.getInventory().firstEmpty() != -1) {
-                player.getInventory().setItem(player.getInventory().firstEmpty(), itemStack);
-            } else {
-                Objects.requireNonNull(player.getLocation().getWorld()).dropItem(player.getLocation(), itemStack);
-            }
-        }
     }
 
 }

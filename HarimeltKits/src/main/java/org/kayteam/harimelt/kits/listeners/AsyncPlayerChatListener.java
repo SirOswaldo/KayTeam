@@ -38,13 +38,19 @@ public class AsyncPlayerChatListener implements Listener {
         Player player = event.getPlayer();
         if (harimeltKits.getEditing().containsKey(player.getUniqueId())) {
             String status = harimeltKits.getEditing().get(player.getUniqueId()).split(":")[0];
-            if (status.equals("DELAY")) {
+            String name = harimeltKits.getEditing().get(player.getUniqueId()).split(":")[1];
+            if (status.equals("CLAIM-TIME")) {
                 String secondsString = event.getMessage();
+                if (secondsString.equals("cancel")) {
+                    MenuEditorInventory menuEditorInventory = new MenuEditorInventory(harimeltKits);
+                    player.openInventory(menuEditorInventory.getInventory(name));
+                    harimeltKits.getEditing().put(player.getUniqueId(), "MENU:" + name);
+                    return;
+                }
                 if (!secondsString.contains(" ")) {
                     try {
                         int seconds = Integer.parseInt(secondsString);
                         if (seconds >= 0) {
-                            String name = harimeltKits.getEditing().get(player.getUniqueId()).split(":")[1];
                             Kit kit = harimeltKits.getKitManager().getKit(name);
                             kit.setClaimTime(seconds);
                             harimeltKits.getKitManager().saveKit(name);
@@ -52,13 +58,13 @@ public class AsyncPlayerChatListener implements Listener {
                             player.openInventory(menuEditorInventory.getInventory(name));
                             harimeltKits.getEditing().put(player.getUniqueId(), "MENU:" + name);
                         } else {
-                            harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeIsNegative", true);
+                            harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeIsNegative");
                         }
                     } catch (NumberFormatException e) {
-                        harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeContainChars", true);
+                        harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeContainChars");
                     }
                 } else {
-                    harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeContainSpace", true);
+                    harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeContainSpace");
                 }
             }
         }

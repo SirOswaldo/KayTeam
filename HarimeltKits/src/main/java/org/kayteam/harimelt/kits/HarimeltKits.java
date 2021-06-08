@@ -57,7 +57,7 @@ public class HarimeltKits extends JavaPlugin {
         configuration.reloadFileConfiguration();
         messages.registerFileConfiguration();
         // Commands
-        AdminCommand adminCommand = new AdminCommand(this);
+        HarimeltKitsCommand harimeltKitsCommand = new HarimeltKitsCommand(this);
         CreateKitCommand createKitCommand = new CreateKitCommand(this);
         DeleteKitCommand deleteKitCommand = new DeleteKitCommand(this);
         EditKitCommand editKitCommand = new EditKitCommand(this);

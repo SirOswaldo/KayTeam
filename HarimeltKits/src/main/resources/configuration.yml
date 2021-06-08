@@ -1,15 +1,14 @@
-default:
-  delay: 60
 inventory:
   kitEditor:
     title: "Editor de Kit"
     items:
-      delay: ""
-      items: ""
-      save: ""
-      close: ""
+      panel: "type:BLUE_STAINED_GLASS_PANE,display-name:&7"
+      claim-time: "type:CLOCK,display-name:&fCambiar el tiempo de reclamación"
+      items: "type:CHEST,display-name:&fModificar Objetos"
+      close: "type:IRON_DOOR,display-name:&cCerrar Menú"
   itemsEditor:
     title: "Editor de Items"
     items:
-      save: ""
-      close: ""
+      panel: "type:BLUE_STAINED_GLASS_PANE,display-name:&7"
+      save: "type:GREEN_WOOL,display-name:&cGuardar"
+      cancel: "type:RED_WOOL,display-name:&cCancelar"

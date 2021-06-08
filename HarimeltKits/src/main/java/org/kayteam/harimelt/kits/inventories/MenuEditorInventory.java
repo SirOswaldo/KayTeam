@@ -30,22 +30,24 @@ import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.tasks.OpenInventoryTask;
 import org.kayteam.harimelt.kits.utils.itemstack.ItemStackUtil;
 
+import java.util.Objects;
+
 public class MenuEditorInventory implements Listener {
 
     private final HarimeltKits harimeltKits;
     private String title;
     private String panel;
     private String close;
-    private String delay;
+    private String claimTime;
     private String items;
 
     public MenuEditorInventory(HarimeltKits harimeltKits) {
         this.harimeltKits = harimeltKits;
         FileConfiguration configuration = harimeltKits.getConfiguration().getFileConfiguration();
-        title = ChatColor.translateAlternateColorCodes('&', configuration.getString("inventory.kitEditor.title", ""));
-        close = configuration.getString("inventory.kitEditor.panel");
+        title = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(configuration.getString("inventory.kitEditor.title")));
+        panel = configuration.getString("inventory.kitEditor.panel");
         close = configuration.getString("inventory.kitEditor.close");
-        delay = configuration.getString("inventory.kitEditor.delay");
+        claimTime = configuration.getString("inventory.kitEditor.claim-time");
         items = configuration.getString("inventory.kitEditor.items");
     }
 
@@ -56,9 +58,9 @@ public class MenuEditorInventory implements Listener {
             inventory.setItem(i, ItemStackUtil.parseString(panel));
         }
         // Buttons
-        inventory.setItem(19, ItemStackUtil.parseString(close));
-        inventory.setItem(16, ItemStackUtil.parseString(delay));
-        inventory.setItem(34, ItemStackUtil.parseString(items));
+        inventory.setItem(10, ItemStackUtil.parseString(claimTime));
+        inventory.setItem(11, ItemStackUtil.parseString(items));
+        inventory.setItem(40, ItemStackUtil.parseString(close));
         return inventory;
     }
 
@@ -70,17 +72,17 @@ public class MenuEditorInventory implements Listener {
             int slot = event.getSlot();
             String name = harimeltKits.getEditing().get(player.getUniqueId()).split(":")[1];
             switch (slot) {
-                case 19:
+                case 40:
                     harimeltKits.getEditing().remove(player.getUniqueId());
                     player.closeInventory();
-                    harimeltKits.getMessages().sendMessage(player, "EditKit.menuClose", new String[][] {{"%name%", name}},true);
+                    harimeltKits.getMessages().sendMessage(player, "EditKit.menuClose", new String[][] {{"%name%", name}});
                     break;
-                case 16:
-                    harimeltKits.getEditing().put(player.getUniqueId(), "DELAY:" + name);
+                case 10:
+                    harimeltKits.getEditing().put(player.getUniqueId(), "CLAIM-TIME:" + name);
                     player.closeInventory();
-                    harimeltKits.getMessages().sendMessage(player, "EditKit.inputWaitTime",true);
+                    harimeltKits.getMessages().sendMessage(player, "EditKit.inputWaitTime");
                     break;
-                case 34:
+                case 11:
                     harimeltKits.getEditing().put(player.getUniqueId(), "ITEMS:" + name);
                     player.closeInventory();
                     ItemsEditorInventory itemsEditorInventory = new ItemsEditorInventory(harimeltKits);

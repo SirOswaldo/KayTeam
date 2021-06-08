@@ -18,43 +18,68 @@
 package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListKitCommand extends SimpleCommand {
 
+    private final HarimeltKits harimeltKits;
+
     public ListKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "Kits", "harimelt.kits");
-        registerCommand();
+        super(harimeltKits, "ListKit");
+        this.harimeltKits = harimeltKits;
     }
 
     @Override
-    public void onCommand(CommandSender sender, String command, String[] strings) {
-        KitManager kitManager = getHarimeltKits().getKitManager();
-        List<String> names = kitManager.getKitsNames();
-        if (!names.isEmpty()) {
-            sendMessage(sender, "ListKit.header");
-            for (String name:names) {
-                Kit kit = kitManager.getKit(name);
-                sendMessage(sender, "ListKit.format", new String[][] {
-                        {"%name%", name},
-                        {"%claim-time%", kit.getClaimTime() + ""}
+    public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
+        Yaml messages = harimeltKits.getMessages();
+        if (player.hasPermission("harimelt.list.kit")) {
+            KitManager kitManager = harimeltKits.getKitManager();
+            List<String> kitNames = kitManager.getKitsNames();
+            if (kitNames.isEmpty()) {
+                messages.sendMessage(player, "ListKit.isEmpty");
+            } else {
+                messages.sendMessage(player, "ListKit.header");
+                for (String kitName:kitNames) {
+                    Kit kit = kitManager.getKit(kitName);
+                    messages.sendMessage(player, "ListKit.format", new String[][] {
+                            {"%kit.name%", kitName},
+                            {"%kit.claim.time%", kit.getClaimTime() + ""}
+                    });
+                }
+                messages.sendMessage(player, "ListKit.footer");
+            }
+        } else {
+            messages.sendMessage(player, "ListKit.noPermission");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
+        Yaml messages = harimeltKits.getMessages();
+        KitManager kitManager = harimeltKits.getKitManager();
+        List<String> kitNames = kitManager.getKitsNames();
+        if (kitNames.isEmpty()) {
+            messages.sendMessage(console, "ListKit.isEmpty");
+        } else {
+            messages.sendMessage(console, "ListKit.header");
+            for (String kitName:kitNames) {
+                Kit kit = kitManager.getKit(kitName);
+                messages.sendMessage(console, "ListKit.format", new String[][] {
+                        {"%kit.name%", kitName},
+                        {"%kit.claim.time%", kit.getClaimTime() + ""}
                 });
             }
-            sendMessage(sender, "ListKit.footer");
-        } else {
-            sendMessage(sender, "ListKit.isEmpty");
+            messages.sendMessage(console, "ListKit.footer");
         }
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String[] strings) {
-        return new ArrayList<>();
+        return true;
     }
 }

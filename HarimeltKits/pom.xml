@@ -46,6 +46,10 @@
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
 
+        <repository>
+            <id>unnamed-releases</id>
+            <url>https://repo.unnamed.team/repository/unnamed-releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -76,7 +80,11 @@
             <version>2.10.6</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>me.fixeddev</groupId>
+            <artifactId>commandflow-universal</artifactId>
+            <version>0.4.5</version>
+        </dependency>
     </dependencies>
 
 </project>

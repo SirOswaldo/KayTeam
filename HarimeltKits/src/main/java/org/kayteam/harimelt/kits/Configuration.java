@@ -15,15 +15,26 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.kayteam.harimelt.kits.utils.command;
+package org.kayteam.harimelt.kits;
 
-import org.bukkit.command.CommandSender;
-public abstract class CommandExecution {
+import org.bukkit.configuration.file.FileConfiguration;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
-    public abstract String getArgument();
+public class Configuration {
 
-    public abstract int getArgumentPosition();
+    private final Yaml yaml;
 
-    public abstract boolean onExecution(CommandSender commandSender, String[] strings);
+    public Configuration(HarimeltKits harimeltKits) {
+        yaml = new Yaml(harimeltKits, "configuration");
+    }
+
+    public boolean dropItems;
+
+    public void loadConfiguration() {
+        FileConfiguration configuration = yaml.getFileConfiguration();
+        if (configuration.contains("dropItems") && configuration.isBoolean("dropItems")) {
+            dropItems = configuration.getBoolean("dropItems");
+        }
+    }
 
 }

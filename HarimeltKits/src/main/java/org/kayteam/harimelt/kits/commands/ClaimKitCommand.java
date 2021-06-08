@@ -18,69 +18,105 @@
 package org.kayteam.harimelt.kits.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
-import java.util.List;
 
 public class ClaimKitCommand extends SimpleCommand {
 
     private final HarimeltKits harimeltKits;
 
     public ClaimKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "", "");
+        super(harimeltKits, "ClaimKit");
         this.harimeltKits = harimeltKits;
     }
 
-
     @Override
-    public void onCommand(CommandSender sender, String command, String[] strings) {
-        if (isPlayer(sender)) {
-            Player player = getPlayer(sender);
-            if (strings.length > 0) {
-                String kitName = strings[0];
-                KitManager kitManager = getHarimeltKits().getKitManager();
+    public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
+        Yaml messages = harimeltKits.getMessages();
+        if (player.hasPermission("harimelt.claim.kit")) {
+            if (arguments.length > 0) {
+                String kitName = arguments[0];
+                KitManager kitManager = harimeltKits.getKitManager();
                 if (kitManager.existKit(kitName)) {
-                    if (kitManager.canClaim(player, kitName)) {
-                        Kit kit = kitManager.getKit(kitName);
+                    Kit kit = kitManager.getKit(kitName);
+                    if (player.hasPermission("harimelt.claim.kit." + kitName)) {
+                        Yaml data = new Yaml(harimeltKits, "players.", player.getName());
+                        data.registerFileConfiguration();
                         if (kit.getClaimTime() == 0) {
-                            if (kitManager.canClaimOneTime(player, kitName)) {
-                                kitManager.claimKit(player, kitName);
-                                kitManager.updateClaimTime(player, kitName);
-                                sendMessage(player, "ClaimKit.kitClaimComplete", new String[][] {{"%name%", kitName}});
-                            } else {
-                                if (player.hasPermission("harimelt.bypass.claim.time")) {
-                                    kitManager.claimKit(player, kitName);
-                                    sendMessage(player, "ClaimKit.kitClaimComplete", new String[][] {{"%name%", kitName}});
-                                } else {
-                                    sendMessage(player, "ClaimKit.oneTimeClaim", new String[][] {{"%name%", kitName}});
+                            if (!data.contains(kitName)) {
+                                data.set(kitName, 0);
+                                data.saveFileConfiguration();
+                                for (ItemStack itemStack:kit.getItems()) {
+                                    if (player.getInventory().firstEmpty() != -1) {
+                                        player.getInventory().addItem(itemStack);
+                                    } else {
+                                        player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
+                                    }
                                 }
+                                messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
+                            } else {
+                                messages.sendMessage(player, "ClaimKit.oneTimeClaimAlreadyTaken", new String[][] {{"%kit.name%", kitName}});
                             }
                         } else {
-                            kitManager.claimKit(player, kitName);
-                            kitManager.updateClaimTime(player, kitName);
-                            sendMessage(player, "ClaimKit.kitClaimComplete", new String[][] {{"%name%", kitName}});
+                            if (!data.contains(kitName)) {
+                                data.set(kitName, (int) (System.currentTimeMillis() / 1000));
+                                data.saveFileConfiguration();
+                                for (ItemStack itemStack:kit.getItems()) {
+                                    if (player.getInventory().firstEmpty() != -1) {
+                                        player.getInventory().addItem(itemStack);
+                                    } else {
+                                        player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
+                                    }
+                                }
+                                messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
+                            } else {
+                                int claimTime = kit.getClaimTime();
+                                int lastClaimTime = data.getInt(kitName);
+                                int currentTime = (int) System.currentTimeMillis() / 1000;
+                                if (currentTime - lastClaimTime >= claimTime) {
+                                    data.set(kitName, (int) (System.currentTimeMillis() / 1000));
+                                    data.saveFileConfiguration();
+                                    for (ItemStack itemStack:kit.getItems()) {
+                                        if (player.getInventory().firstEmpty() != -1) {
+                                            player.getInventory().addItem(itemStack);
+                                        } else {
+                                            player.getLocation().getWorld().dropItem(player.getLocation(), itemStack);
+                                        }
+                                    }
+                                    messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
+                                } else {
+                                    messages.sendMessage(player, "ClaimKit.needWaitToClaim", new String[][] {{"%kit.name%", kitName}, {"%seconds%", "" + (claimTime - (currentTime - lastClaimTime))}});
+                                }
+                            }
                         }
                     } else {
-                        sendMessage(player, "ClaimKit.noPermissionForTheKit", new String[][] {{"%name%", kitName}});
+                        messages.sendMessage(player, "ClaimKit.noKitPermission", new String[][] {{"%kit.name%", kitName}});
                     }
                 } else {
-                    sendMessage(player, "ClaimKit.invalidKitName", new String[][] {{"%name%", kitName}});
+                    messages.sendMessage(player, "ClaimKit.kitNoExist", new String[][] {{"%kit.name%", kitName}});
                 }
             } else {
-                sendMessage(player, "ClaimKit.emptyKitName");
+                messages.sendMessage(player, "ClaimKit.kitNameEmpty");
             }
         } else {
-
+            messages.sendMessage(player, "ClaimKit.noPermission");
         }
+        return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String[] strings) {
-        return null;
+    public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
+        Yaml messages = harimeltKits.getMessages();
+        messages.sendMessage(console, "ClaimTime.isConsole");
+        return true;
     }
 }

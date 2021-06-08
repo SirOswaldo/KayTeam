@@ -3,18 +3,32 @@ name: HarimeltKits
 version: 1.0.0
 api-version: 1.16
 commands:
-  HarimeltKitsAdmin:
+  HarimeltKits:
     description: "Manage HarimeltKits plugin"
   CreateKit:
     description: CreateKit
+    aliases:
+      - crearkit
   DeleteKit:
     description: DeleteKit
+    aliases:
+      - eliminarkit
+      - borrarkit
+      - removerkit
   EditKit:
     description: EditKit
+    aliases:
+      - editarkit
   ListKit:
     description: ListKit
+    aliases:
+      - listarkits
+      - kits
   ClaimKit:
     description: ClaimKit
+    aliases:
+      - reclamarkit
+      - kit
 permissions:
   harimelt.*:
     description: All
