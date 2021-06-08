@@ -32,16 +32,6 @@ commands:
       - reclamarkit
       - kit
 permissions:
-  harimelt.*:
-    default: op
-    description: All
-    children:
-      harimelt.admin: true
-      harimelt.create.kit: true
-      harimelt.delete.kit: true
-      harimelt.edit.kit: true
-      harimelt.list.kit: true
-      harimelt.claim.kit: true
   harimelt.admin:
     default: op
     description: Admin
@@ -61,5 +51,8 @@ permissions:
     default: true
     description: ClaimKit
   harimelt.bypass.claim.time:
+    default: op
+    description: Bypass ClaimTime
+  harimelt.bypass.claim.one.time:
     default: op
     description: Bypass ClaimTime

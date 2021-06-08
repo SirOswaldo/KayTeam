@@ -20,10 +20,17 @@ package org.kayteam.harimelt.kits.utils.yaml;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -31,8 +38,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 
@@ -180,6 +186,7 @@ public class Yaml {
     // Default
     public void set(String path, Object value) { fileConfiguration.set(path, value); }
     public boolean contains(String path) { return fileConfiguration.contains(path); }
+    // Boolean
     public boolean isBoolean(String path) { return fileConfiguration.isBoolean(path); }
     public boolean getBoolean(String path) {
         return fileConfiguration.getBoolean(path);
@@ -187,8 +194,110 @@ public class Yaml {
     public boolean getBoolean(String path, boolean def) {
         return fileConfiguration.getBoolean(path, def);
     }
+    // Boolean
     public boolean isInt(String path) { return fileConfiguration.isInt(path); }
     public int getInt(String path) { return fileConfiguration.getInt(path); }
     public int getInt(String path, int def) { return fileConfiguration.getInt(path, def); }
+    // String
+    public boolean isString(String path) { return fileConfiguration.isString(path); }
+    public String getString(String path) { return fileConfiguration.getString(path); }
+    public String getString(String path, String def) { return fileConfiguration.getString(path, def); }
 
+
+    public ItemStack getItemStack(String path) {
+        Material material = Material.getMaterial(getString(path + ".material", "DIRT"));
+        int amount = getInt(path + ".amount", 1);
+        if (material != null) {
+            ItemStack itemStack = new ItemStack(material, amount);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta != null) {
+                // DisplayName
+                if (contains(path + ".display-name")) {
+                    if (isString(path + ".display-name")) {
+                        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', getString(path + ".display-name")));
+                    }
+                }
+                // Lore
+                if (contains(path + ".lore")) {
+                    if (fileConfiguration.isList(path + ".lore")) {
+                        List<String> lore = fileConfiguration.getStringList(path + ".lore");
+                        for (int i = 0; i < lore.size(); i++) {
+                            lore.set(i, ChatColor.translateAlternateColorCodes('&', lore.get(i)));
+                        }
+                        itemMeta.setLore(lore);
+                    }
+                }
+                // ItemFlag
+                if (contains(path + ".item-flag")) {
+                    if (fileConfiguration.isList(path + ".item-flag")) {
+                        List<String> flags = fileConfiguration.getStringList(path + ".item-flag");
+                        for (String flag:flags) {
+                            ItemFlag itemFlag = ItemFlag.valueOf(flag);
+                            itemMeta.addItemFlags(itemFlag);
+                        }
+                    }
+                }
+                // CustomModelData
+                if (contains(path + ".custom-model-data")) {
+                    if (isInt(path + ".custom-model-data")) {
+                        itemMeta.setCustomModelData(getInt(path + ".custom-model-data"));
+                    }
+                }
+            }
+            itemStack.setItemMeta(itemMeta);
+            // Enchantments
+            if (contains(path + ".enchantments")) {
+                Set<String> names = fileConfiguration.getConfigurationSection(path + ".enchantments").getValues(false).keySet();
+                for (String name:names) {
+                    Enchantment enchantment = Enchantment.getByName(name);
+                    if (enchantment != null) {
+                        itemStack.addUnsafeEnchantment(enchantment, getInt(path + ".enchantments." + name));
+                    }
+                }
+            }
+            return itemStack;
+        } else {
+            ItemStack error = new ItemStack(Material.DIRT);
+            ItemMeta errorMeta = error.getItemMeta();
+            if (errorMeta != null) {
+                errorMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cERROR"));
+            }
+            error.setItemMeta(errorMeta);
+            return new ItemStack(Material.DIRT);
+        }
+    }
+    public void setItemStack(String path, ItemStack item) {
+        fileConfiguration.set(path + ".material", item.getType().toString());
+        fileConfiguration.set(path + ".amount", item.getAmount());
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta != null) {
+            // DisplayName
+            if (itemMeta.hasDisplayName()) {
+                fileConfiguration.set(path + ".display-name", itemMeta.getDisplayName());
+            }
+            // Lore
+            if (itemMeta.hasLore()) {
+                fileConfiguration.set(path + ".lore", itemMeta.getLore());
+            }
+            // ItemFlag
+            if (!itemMeta.getItemFlags().isEmpty()) {
+                List<String> flags = new ArrayList<>();
+                for (ItemFlag flag:itemMeta.getItemFlags()) {
+                    flags.add(flag.toString());
+                }
+                fileConfiguration.set(path + ".item-flag", flags);
+            }
+            // Enchantments
+            if (!item.getEnchantments().isEmpty()) {
+                for (Enchantment enchantment:item.getEnchantments().keySet()) {
+                    fileConfiguration.set(path + ".enchantments." + enchantment.getName(), item.getEnchantments().get(enchantment));
+                }
+            }
+            // CustomModelData
+            if (itemMeta.hasCustomModelData()) {
+                fileConfiguration.set(path + ".custom-model-data", itemMeta.getCustomModelData());
+            }
+        }
+        saveFileConfiguration();
+    }
 }

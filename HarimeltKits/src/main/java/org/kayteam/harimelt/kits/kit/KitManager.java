@@ -23,42 +23,40 @@ import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class KitManager {
 
-    private final HarimeltKits harimeltKits;
-    public KitManager(HarimeltKits harimeltKits) {
-        this.harimeltKits = harimeltKits;
+    private final HarimeltKits plugin;
+    public KitManager(HarimeltKits plugin) {
+        this.plugin = plugin;
     }
 
     private final HashMap<String, Kit> kits = new HashMap<>();
 
-
     public void loadAllKits() {
-        File directory = new File(harimeltKits.getDataFolder() + File.separator + "kits");
+        File directory = new File(plugin.getDataFolder() + File.separator + "kits");
         if (directory.exists()) {
             if (directory.isDirectory()) {
-                File[] files = directory.listFiles(new FileFilter() {
-                    @Override
-                    public boolean accept(File pathname) {
-                        return pathname.getName().endsWith(".yml");
-                    }
-                });
+                File[] files = directory.listFiles(pathname -> pathname.getName().endsWith(".yml"));
                 if (files != null) {
                     for (File file:files) {
-                        String name = file.getName().split("\\.")[0];
-                        Yaml kitYaml = new Yaml(harimeltKits, "kits", name);
+                        String name = file.getName().replace(".yml", "");
+                        plugin.getLogger().info("Loading '" + name + "' kit");
+                        Yaml kitYaml = new Yaml(plugin, "kits", name);
                         kitYaml.registerFileConfiguration();
                         FileConfiguration kitConfiguration = kitYaml.getFileConfiguration();
                         int claimTime = 0;
                         if (kitConfiguration.contains("claim-time")) {
                             if (kitConfiguration.isInt("claim-time")) {
                                 claimTime = kitConfiguration.getInt("claim-time");
+                            } else {
+                                plugin.getLogger().info("The kit '" + name + "' contain claim time but this no is a number.");
                             }
+                        } else {
+                            plugin.getLogger().info("The kit '" + name + "' no contain claim time and it has been set to 0.");
                         }
                         List<?> itemsRaw = new ArrayList<>();
                         List<ItemStack> items = new ArrayList<>();
@@ -80,6 +78,8 @@ public class KitManager {
                         Kit kit = new Kit(name);
                         kit.setClaimTime(claimTime);
                         kit.setItems(items);
+                        kits.put(kit.getName(), kit);
+                        plugin.getLogger().info("The kit '" + name + "' has been loaded.");
                     }
                 }
             }
@@ -96,7 +96,7 @@ public class KitManager {
 
     public void saveKit(String name) {
         Kit kit = kits.get(name);
-        Yaml yaml = new Yaml(harimeltKits, "kits", name);
+        Yaml yaml = new Yaml(plugin, "kits", name);
         yaml.registerFileConfiguration();
         FileConfiguration configuration = yaml.getFileConfiguration();
         configuration.set("claim-time", kit.getClaimTime());
@@ -113,7 +113,7 @@ public class KitManager {
     }
 
     public void deleteKit(String name) {
-        Yaml yaml = new Yaml(harimeltKits, "kits", name);
+        Yaml yaml = new Yaml(plugin, "kits", name);
         if (yaml.deleteFileConfiguration()) {
             kits.remove(name);
         }

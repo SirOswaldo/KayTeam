@@ -48,10 +48,10 @@ public class ClaimKitCommand extends SimpleCommand {
                 if (kitManager.existKit(kitName)) {
                     Kit kit = kitManager.getKit(kitName);
                     if (player.hasPermission("harimelt.claim.kit." + kitName)) {
-                        Yaml data = new Yaml(plugin, "players.", player.getName());
+                        Yaml data = new Yaml(plugin, "players", player.getName());
                         data.registerFileConfiguration();
                         if (kit.getClaimTime() == 0) {
-                            if (data.contains(kitName)) {
+                            if (player.hasPermission("harimelt.bypass.claim.one.time") || !data.contains(kitName)) {
                                 data.set(kitName, 0);
                                 data.saveFileConfiguration();
                                 for (ItemStack itemStack:kit.getItems()) {
@@ -66,7 +66,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                 messages.sendMessage(player, "ClaimKit.oneTimeClaimAlreadyTaken", new String[][] {{"%kit.name%", kitName}});
                             }
                         } else {
-                            if (data.contains(kitName)) {
+                            if (!data.contains(kitName)) {
                                 data.set(kitName, (int) (System.currentTimeMillis() / 1000));
                                 data.saveFileConfiguration();
                                 for (ItemStack itemStack:kit.getItems()) {
@@ -81,7 +81,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                 int claimTime = kit.getClaimTime();
                                 int lastClaimTime = data.getInt(kitName);
                                 int currentTime = (int) System.currentTimeMillis() / 1000;
-                                if (currentTime - lastClaimTime >= claimTime) {
+                                if (player.hasPermission("harimelt.bypass.claim.time") || currentTime - lastClaimTime >= claimTime) {
                                     data.set(kitName, (int) (System.currentTimeMillis() / 1000));
                                     data.saveFileConfiguration();
                                     for (ItemStack itemStack:kit.getItems()) {

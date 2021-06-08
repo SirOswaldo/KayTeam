@@ -26,41 +26,43 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.tasks.OpenInventoryTask;
-import org.kayteam.harimelt.kits.utils.itemstack.ItemStackUtil;
+import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.Objects;
 
 public class MenuEditorInventory implements Listener {
 
-    private final HarimeltKits harimeltKits;
+    private final HarimeltKits plugin;
     private String title;
-    private String panel;
-    private String close;
-    private String claimTime;
-    private String items;
 
-    public MenuEditorInventory(HarimeltKits harimeltKits) {
-        this.harimeltKits = harimeltKits;
-        FileConfiguration configuration = harimeltKits.getConfiguration().getFileConfiguration();
+    public MenuEditorInventory(HarimeltKits plugin) {
+        this.plugin = plugin;
+        FileConfiguration configuration = plugin.getConfiguration().getFileConfiguration();
         title = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(configuration.getString("inventory.kitEditor.title")));
-        panel = configuration.getString("inventory.kitEditor.panel");
-        close = configuration.getString("inventory.kitEditor.close");
-        claimTime = configuration.getString("inventory.kitEditor.claim-time");
-        items = configuration.getString("inventory.kitEditor.items");
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Inventory getInventory(String name) {
+        Yaml configuration = plugin.getConfiguration();
         Inventory inventory = Bukkit.createInventory(null, 45, title);
         // Panels
-        for (int i = 0; i < 54; i++) {
-            inventory.setItem(i, ItemStackUtil.parseString(panel));
+        ItemStack panel = configuration.getItemStack("inventory.kitEditor.items.panel");
+        for (int i = 0; i < 45; i++) {
+            inventory.setItem(i, panel);
         }
         // Buttons
-        inventory.setItem(10, ItemStackUtil.parseString(claimTime));
-        inventory.setItem(11, ItemStackUtil.parseString(items));
-        inventory.setItem(40, ItemStackUtil.parseString(close));
+        inventory.setItem(10, configuration.getItemStack("inventory.kitEditor.items.claim-time"));
+        inventory.setItem(11, configuration.getItemStack("inventory.kitEditor.items.items"));
+        inventory.setItem(31, configuration.getItemStack("inventory.kitEditor.items.close"));
         return inventory;
     }
 
@@ -70,22 +72,22 @@ public class MenuEditorInventory implements Listener {
             event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
             int slot = event.getSlot();
-            String name = harimeltKits.getEditing().get(player.getUniqueId()).split(":")[1];
+            String name = plugin.getEditing().get(player.getUniqueId()).split(":")[1];
             switch (slot) {
-                case 40:
-                    harimeltKits.getEditing().remove(player.getUniqueId());
+                case 31:
+                    plugin.getEditing().remove(player.getUniqueId());
                     player.closeInventory();
-                    harimeltKits.getMessages().sendMessage(player, "EditKit.menuClose", new String[][] {{"%name%", name}});
+                    plugin.getMessages().sendMessage(player, "EditKit.menuClose", new String[][] {{"%name%", name}});
                     break;
                 case 10:
-                    harimeltKits.getEditing().put(player.getUniqueId(), "CLAIM-TIME:" + name);
+                    plugin.getEditing().put(player.getUniqueId(), "CLAIM-TIME:" + name);
                     player.closeInventory();
-                    harimeltKits.getMessages().sendMessage(player, "EditKit.inputWaitTime");
+                    plugin.getMessages().sendMessage(player, "EditKit.inputWaitTime");
                     break;
                 case 11:
-                    harimeltKits.getEditing().put(player.getUniqueId(), "ITEMS:" + name);
+                    plugin.getEditing().put(player.getUniqueId(), "ITEMS:" + name);
                     player.closeInventory();
-                    ItemsEditorInventory itemsEditorInventory = new ItemsEditorInventory(harimeltKits);
+                    ItemsEditorInventory itemsEditorInventory = new ItemsEditorInventory(plugin);
                     player.openInventory(itemsEditorInventory.getInventory(name));
                     break;
             }
@@ -96,10 +98,12 @@ public class MenuEditorInventory implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getView().getTitle().equals(title)) {
             Player player = (Player) event.getPlayer();
-            String status = harimeltKits.getEditing().get(player.getUniqueId()).split(":")[0];
-            if (status.equals("MENU")) {
-                OpenInventoryTask openInventoryTask = new OpenInventoryTask(harimeltKits, player, event.getInventory());
-                openInventoryTask.startScheduler();
+            if (plugin.getEditing().containsKey(player.getUniqueId())) {
+                String status = plugin.getEditing().get(player.getUniqueId()).split(":")[0];
+                if (status.equals("MENU")) {
+                    OpenInventoryTask openInventoryTask = new OpenInventoryTask(plugin, player, event.getInventory());
+                    openInventoryTask.startScheduler();
+                }
             }
         }
     }

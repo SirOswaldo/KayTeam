@@ -2,13 +2,27 @@ inventory:
   kitEditor:
     title: "Editor de Kit"
     items:
-      panel: "type:BLUE_STAINED_GLASS_PANE,display-name:&7"
-      claim-time: "type:CLOCK,display-name:&fCambiar el tiempo de reclamación"
-      items: "type:CHEST,display-name:&fModificar Objetos"
-      close: "type:IRON_DOOR,display-name:&cCerrar Menú"
+      panel:
+        material: "BLUE_STAINED_GLASS_PANE"
+        display-name: "&7"
+      claim-time:
+        material: "CLOCK"
+        display-name: "&fCambiar el tiempo de reclamación"
+      items:
+        material: "CHEST"
+        display-name: "&fModificar Objetos"
+      close:
+        material: "IRON_DOOR"
+        display-name: "&cCerrar Menú"
   itemsEditor:
     title: "Editor de Items"
     items:
-      panel: "type:BLUE_STAINED_GLASS_PANE,display-name:&7"
-      save: "type:GREEN_WOOL,display-name:&cGuardar"
-      cancel: "type:RED_WOOL,display-name:&cCancelar"
+      panel:
+        material: "BLUE_STAINED_GLASS_PANE"
+        display-name: "&7"
+      save:
+        material: "GREEN_WOOL"
+        display-name: "&aGuardar"
+      cancel:
+        material: "RED_WOOL"
+        display-name: "&cCancelar"

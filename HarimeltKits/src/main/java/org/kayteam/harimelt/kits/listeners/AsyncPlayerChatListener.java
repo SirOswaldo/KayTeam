@@ -24,6 +24,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.inventories.MenuEditorInventory;
 import org.kayteam.harimelt.kits.kit.Kit;
+import org.kayteam.harimelt.kits.tasks.OpenInventoryTask;
 
 public class AsyncPlayerChatListener implements Listener {
 
@@ -55,7 +56,8 @@ public class AsyncPlayerChatListener implements Listener {
                             kit.setClaimTime(seconds);
                             harimeltKits.getKitManager().saveKit(name);
                             MenuEditorInventory menuEditorInventory = new MenuEditorInventory(harimeltKits);
-                            player.openInventory(menuEditorInventory.getInventory(name));
+                            OpenInventoryTask openInventoryTask = new OpenInventoryTask(harimeltKits, player, menuEditorInventory.getInventory(name));
+                            openInventoryTask.startScheduler();
                             harimeltKits.getEditing().put(player.getUniqueId(), "MENU:" + name);
                         } else {
                             harimeltKits.getMessages().sendMessage(player, "EditKit.waitTimeIsNegative");
