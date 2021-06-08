@@ -22,6 +22,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.kayteam.harimelt.kits.HarimeltKits;
+import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.kit.KitManager;
 import org.kayteam.harimelt.kits.utils.command.SimpleCommand;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
@@ -46,7 +47,7 @@ public class CreateKitCommand extends SimpleCommand {
             if (arguments.length > 0) {
                 KitManager kitManager = plugin.getKitManager();
                 String kitName = arguments[0];
-                if (kitManager.existKit(kitName)) {
+                if (!kitManager.existKit(kitName)) {
                     int claimTime = 0;
                     if (arguments.length > 1) {
                         try {
@@ -59,10 +60,12 @@ public class CreateKitCommand extends SimpleCommand {
                             messages.sendMessage(player, "CreateKit.claimTimeContainIllegalChars");
                         }
                     }
-                    kitManager.createKit(kitName, claimTime);
+                    Kit kit = new Kit(kitName);
                     List<ItemStack> items = new ArrayList<>();
                     Collections.addAll(items, player.getInventory().getContents());
-                    kitManager.getKit(kitName).setItems(items);
+                    kit.setClaimTime(claimTime);
+                    kit.setItems(items);
+                    kitManager.addKit(kit);
                     kitManager.saveKit(kitName);
                     messages.sendMessage(player, "CreateKit.kitCreated", new String[][] {{"%kit.name%", kitName}});
                 } else {
@@ -83,4 +86,5 @@ public class CreateKitCommand extends SimpleCommand {
         messages.sendMessage(console, "CreateKit.isConsole");
         return true;
     }
+
 }

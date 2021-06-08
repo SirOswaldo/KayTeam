@@ -64,4 +64,5 @@ public class EditKitCommand extends SimpleCommand {
         messages.sendMessage(console, "EditKit.isConsole");
         return true;
     }
+
 }

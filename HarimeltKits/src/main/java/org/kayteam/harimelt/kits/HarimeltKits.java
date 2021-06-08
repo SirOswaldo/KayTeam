@@ -26,6 +26,7 @@ import org.kayteam.harimelt.kits.listeners.AsyncPlayerChatListener;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class HarimeltKits extends JavaPlugin {
@@ -57,12 +58,12 @@ public class HarimeltKits extends JavaPlugin {
         configuration.registerFileConfiguration();
         messages.registerFileConfiguration();
         // Commands
-        HarimeltKitsCommand harimeltKitsCommand = new HarimeltKitsCommand(this);
-        CreateKitCommand createKitCommand = new CreateKitCommand(this);
-        DeleteKitCommand deleteKitCommand = new DeleteKitCommand(this);
-        EditKitCommand editKitCommand = new EditKitCommand(this);
-        ClaimKitCommand claimKitCommand = new ClaimKitCommand(this);
-        ListKitCommand listKitCommand = new ListKitCommand(this);
+        Objects.requireNonNull(getCommand("HarimeltKits")).setExecutor(new HarimeltKitsCommand(this));
+        Objects.requireNonNull(getCommand("CreateKit")).setExecutor(new CreateKitCommand(this));
+        Objects.requireNonNull(getCommand("DeleteKit")).setExecutor(new DeleteKitCommand(this));
+        Objects.requireNonNull(getCommand("EditKit")).setExecutor(new EditKitCommand(this));
+        Objects.requireNonNull(getCommand("ClaimKit")).setExecutor(new ClaimKitCommand(this));
+        Objects.requireNonNull(getCommand("ListKit")).setExecutor(new ListKitCommand(this));
         // Listeners
         getServer().getPluginManager().registerEvents(new MenuEditorInventory(this), this);
         getServer().getPluginManager().registerEvents(new ItemsEditorInventory(this), this);

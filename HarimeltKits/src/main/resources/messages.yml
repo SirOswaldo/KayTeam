@@ -21,6 +21,7 @@ EditKit:
   inputWaitTime:
     - "%prefix% &fIngrese el tiempo de espera en segundos."
     - "&fRecuerde que puede establecerlo a &20 &fsi desea que el kit solo se pueda reclamar una única vez."
+    - "&fSi quieres cancelar ingrese &2cancel&f."
   waitTimeContainSpace: "%prefix% &fEl tiempo de espera no puede contener espacios."
   waitTimeContainChars: "%prefix% &fEl tiempo de espera no puede contener letras ni caracteres extraños."
   waitTimeIsNegative: "%prefix% &fEl tiempo de espera no puede ser negativo."

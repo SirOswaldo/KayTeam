@@ -98,6 +98,8 @@ public class Yaml {
         if (!file.exists()) {
             getFileConfiguration().options().copyDefaults(true);
             saveFileConfiguration();
+        } else {
+            reloadFileConfiguration();
         }
     }
     public boolean deleteFileConfiguration(){

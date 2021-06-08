@@ -54,10 +54,10 @@ public class KitManager {
                         Yaml kitYaml = new Yaml(harimeltKits, "kits", name);
                         kitYaml.registerFileConfiguration();
                         FileConfiguration kitConfiguration = kitYaml.getFileConfiguration();
-                        int delay = 0;
-                        if (kitConfiguration.contains("delay")) {
-                            if (kitConfiguration.isInt("delay")) {
-                                delay = kitConfiguration.getInt("delay");
+                        int claimTime = 0;
+                        if (kitConfiguration.contains("claim-time")) {
+                            if (kitConfiguration.isInt("claim-time")) {
+                                claimTime = kitConfiguration.getInt("claim-time");
                             }
                         }
                         List<?> itemsRaw = new ArrayList<>();
@@ -78,7 +78,7 @@ public class KitManager {
                             }
                         }
                         Kit kit = new Kit(name);
-                        kit.setClaimTime(delay);
+                        kit.setClaimTime(claimTime);
                         kit.setItems(items);
                     }
                 }
@@ -108,12 +108,8 @@ public class KitManager {
         return kits.containsKey(name);
     }
 
-    public void createKit(String name, int delay) {
-        Yaml yaml = new Yaml(harimeltKits, "kits", name);
-        yaml.registerFileConfiguration();
-        FileConfiguration kit = yaml.getFileConfiguration();
-        kit.set("claim-time", delay);
-        yaml.saveFileConfiguration();
+    public void addKit(Kit kit) {
+        kits.put(kit.getName(), kit);
     }
 
     public void deleteKit(String name) {

@@ -30,18 +30,18 @@ import java.util.List;
 
 public class ListKitCommand extends SimpleCommand {
 
-    private final HarimeltKits harimeltKits;
+    private final HarimeltKits plugin;
 
-    public ListKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "ListKit");
-        this.harimeltKits = harimeltKits;
+    public ListKitCommand(HarimeltKits plugin) {
+        super(plugin, "ListKit");
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
-        Yaml messages = harimeltKits.getMessages();
+        Yaml messages = plugin.getMessages();
         if (player.hasPermission("harimelt.list.kit")) {
-            KitManager kitManager = harimeltKits.getKitManager();
+            KitManager kitManager = plugin.getKitManager();
             List<String> kitNames = kitManager.getKitsNames();
             if (kitNames.isEmpty()) {
                 messages.sendMessage(player, "ListKit.isEmpty");
@@ -64,8 +64,8 @@ public class ListKitCommand extends SimpleCommand {
 
     @Override
     public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
-        Yaml messages = harimeltKits.getMessages();
-        KitManager kitManager = harimeltKits.getKitManager();
+        Yaml messages = plugin.getMessages();
+        KitManager kitManager = plugin.getKitManager();
         List<String> kitNames = kitManager.getKitsNames();
         if (kitNames.isEmpty()) {
             messages.sendMessage(console, "ListKit.isEmpty");
@@ -82,4 +82,5 @@ public class ListKitCommand extends SimpleCommand {
         }
         return true;
     }
+
 }

@@ -17,6 +17,11 @@
       <option name="url" value="https://hub.spigotmc.org/nexus/content/repositories/snapshots/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="aikar" />
+      <option name="name" value="aikar" />
+      <option name="url" value="https://repo.aikar.co/content/groups/aikar/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="unnamed-snapshots" />
       <option name="name" value="unnamed-snapshots" />
       <option name="url" value="https://repo.unnamed.team/repository/unnamed-snapshots/" />

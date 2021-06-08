@@ -32,7 +32,9 @@ public abstract class SimpleCommand implements CommandExecutor, TabCompleter {
         if (pluginCommand != null) {
             pluginCommand.setExecutor(this);
             pluginCommand.setTabCompleter(this);
-            javaPlugin.getLogger().info("The command '" + command + "' has been registered");
+            javaPlugin.getLogger().info("The command '" + command + "' registered");
+        } else {
+            javaPlugin.getLogger().info("The command '" + command + "' no can registered");
         }
     }
 

@@ -28,11 +28,9 @@ import org.kayteam.moretags.playerdata.PlayerDataManager;
 import org.kayteam.moretags.storage.Storage;
 import org.kayteam.moretags.storage.storages.MySqlStorage;
 import org.kayteam.moretags.storage.storages.YamlStorage;
-import org.kayteam.moretags.tag.TagManager;
 import org.kayteam.moretags.util.papi.PlaceholderAPIUtil;
 import org.kayteam.moretags.util.yaml.Yaml;
 
-import java.util.UUID;
 
 public class MoreTags extends JavaPlugin {
 

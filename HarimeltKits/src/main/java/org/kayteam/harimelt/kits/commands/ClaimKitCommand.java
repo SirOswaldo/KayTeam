@@ -29,30 +29,29 @@ import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.Objects;
 
-
 public class ClaimKitCommand extends SimpleCommand {
 
-    private final HarimeltKits harimeltKits;
+    private final HarimeltKits plugin;
 
-    public ClaimKitCommand(HarimeltKits harimeltKits) {
-        super(harimeltKits, "ClaimKit");
-        this.harimeltKits = harimeltKits;
+    public ClaimKitCommand(HarimeltKits plugin) {
+        super(plugin, "ClaimKit");
+        this.plugin = plugin;
     }
 
     @Override
     public boolean onPlayerExecute(Player player, Command command, String[] arguments) {
-        Yaml messages = harimeltKits.getMessages();
+        Yaml messages = plugin.getMessages();
         if (player.hasPermission("harimelt.claim.kit")) {
             if (arguments.length > 0) {
                 String kitName = arguments[0];
-                KitManager kitManager = harimeltKits.getKitManager();
+                KitManager kitManager = plugin.getKitManager();
                 if (kitManager.existKit(kitName)) {
                     Kit kit = kitManager.getKit(kitName);
                     if (player.hasPermission("harimelt.claim.kit." + kitName)) {
-                        Yaml data = new Yaml(harimeltKits, "players.", player.getName());
+                        Yaml data = new Yaml(plugin, "players.", player.getName());
                         data.registerFileConfiguration();
                         if (kit.getClaimTime() == 0) {
-                            if (!data.contains(kitName)) {
+                            if (data.contains(kitName)) {
                                 data.set(kitName, 0);
                                 data.saveFileConfiguration();
                                 for (ItemStack itemStack:kit.getItems()) {
@@ -67,7 +66,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                 messages.sendMessage(player, "ClaimKit.oneTimeClaimAlreadyTaken", new String[][] {{"%kit.name%", kitName}});
                             }
                         } else {
-                            if (!data.contains(kitName)) {
+                            if (data.contains(kitName)) {
                                 data.set(kitName, (int) (System.currentTimeMillis() / 1000));
                                 data.saveFileConfiguration();
                                 for (ItemStack itemStack:kit.getItems()) {
@@ -115,8 +114,9 @@ public class ClaimKitCommand extends SimpleCommand {
 
     @Override
     public boolean onConsoleExecute(ConsoleCommandSender console, Command command, String[] arguments) {
-        Yaml messages = harimeltKits.getMessages();
+        Yaml messages = plugin.getMessages();
         messages.sendMessage(console, "ClaimTime.isConsole");
         return true;
     }
+
 }
