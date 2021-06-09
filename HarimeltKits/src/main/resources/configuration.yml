@@ -1,3 +1,5 @@
+editClaimTimeBookText:
+  - "Firme el libro con el nuevo tiempo de reclamación"
 inventory:
   kitEditor:
     title: "Editor de Kit"
@@ -8,6 +10,9 @@ inventory:
       claim-time:
         material: "CLOCK"
         display-name: "&fCambiar el tiempo de reclamación"
+        lore:
+          - "&f"
+          - "&fTime: %kit.claim.time%"
       items:
         material: "CHEST"
         display-name: "&fModificar Objetos"

@@ -19,6 +19,7 @@ package org.kayteam.harimelt.kits.inventories;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,8 +28,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.kayteam.harimelt.kits.HarimeltKits;
+import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.tasks.OpenInventoryTask;
+import org.kayteam.harimelt.kits.tasks.RenewBook;
+import org.kayteam.harimelt.kits.utils.input.BookInput;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.Objects;
@@ -60,8 +65,15 @@ public class MenuEditorInventory implements Listener {
             inventory.setItem(i, panel);
         }
         // Buttons
-        inventory.setItem(10, configuration.getItemStack("inventory.kitEditor.items.claim-time"));
-        inventory.setItem(11, configuration.getItemStack("inventory.kitEditor.items.items"));
+        Kit kit = plugin.getKitManager().getKit(name);
+        inventory.setItem(10, configuration.replace(configuration.getItemStack("inventory.kitEditor.items.claim-time"), new String[][] {
+                {"%kit.name%", name},
+                {"%kit.claim.time%", kit.getClaimTime() + ""}
+        }));
+        inventory.setItem(11, configuration.replace(configuration.getItemStack("inventory.kitEditor.items.items"), new String[][] {
+                {"%kit.name%", name},
+                {"%kit.claim.time%", kit.getClaimTime() + ""}
+        }));
         inventory.setItem(31, configuration.getItemStack("inventory.kitEditor.items.close"));
         return inventory;
     }
@@ -82,6 +94,8 @@ public class MenuEditorInventory implements Listener {
                 case 10:
                     plugin.getEditing().put(player.getUniqueId(), "CLAIM-TIME:" + name);
                     player.closeInventory();
+                    RenewBook renewBook = new RenewBook(plugin, player);
+                    renewBook.startScheduler();
                     plugin.getMessages().sendMessage(player, "EditKit.inputWaitTime");
                     break;
                 case 11:

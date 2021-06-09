@@ -198,6 +198,10 @@ public class Yaml {
     public boolean isInt(String path) { return fileConfiguration.isInt(path); }
     public int getInt(String path) { return fileConfiguration.getInt(path); }
     public int getInt(String path, int def) { return fileConfiguration.getInt(path, def); }
+    // Long
+    public boolean isLong(String path) { return fileConfiguration.isLong(path); }
+    public long getLong(String path) { return fileConfiguration.getLong(path); }
+    public long getLong(String path, long def) { return fileConfiguration.getLong(path, def); }
     // String
     public boolean isString(String path) { return fileConfiguration.isString(path); }
     public String getString(String path) { return fileConfiguration.getString(path); }
@@ -300,4 +304,35 @@ public class Yaml {
         }
         saveFileConfiguration();
     }
+    public ItemStack replace(ItemStack itemStack, String[][] replacements) {
+        ItemStack item = new ItemStack(itemStack);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            if (meta.hasDisplayName()) {
+                String displayName = meta.getDisplayName();
+                for (String[] values:replacements){
+                    displayName = displayName.replaceAll(values[0], values[1]);
+                }
+                displayName = ChatColor.translateAlternateColorCodes('&', displayName);
+                meta.setDisplayName(displayName);
+            }
+            if (meta.hasLore()) {
+                List<String> lore = meta.getLore();
+                List<String> newLore = new ArrayList<>();
+                if (lore != null) {
+                    for (String line:lore) {
+                        for (String[] values:replacements){
+                            line = line.replaceAll(values[0], values[1]);
+                        }
+                        line = ChatColor.translateAlternateColorCodes('&', line);
+                        newLore.add(line);
+                    }
+                    meta.setLore(newLore);
+                }
+            }
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
 }

@@ -19,9 +19,9 @@ EditKit:
   kitNoExist: "%prefix% &fEl kit &2%kit.name% &fno existe."
   menuClose: "%prefix% &fCerraste el menu de edición."
   inputWaitTime:
-    - "%prefix% &fIngrese el tiempo de espera en segundos."
+    - "%prefix% &fFirme el libro con el nuevo tiempo de reclamación."
     - "&fRecuerde que puede establecerlo a &20 &fsi desea que el kit solo se pueda reclamar una única vez."
-    - "&fSi quieres cancelar ingrese &2cancel&f."
+    - "&fSi quieres cancelar debe agacharse."
   waitTimeContainSpace: "%prefix% &fEl tiempo de espera no puede contener espacios."
   waitTimeContainChars: "%prefix% &fEl tiempo de espera no puede contener letras ni caracteres extraños."
   waitTimeIsNegative: "%prefix% &fEl tiempo de espera no puede ser negativo."

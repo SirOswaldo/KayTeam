@@ -46,7 +46,7 @@ public class CreateKitCommand extends SimpleCommand {
         if (player.hasPermission("harimelt.create.kit")) {
             if (arguments.length > 0) {
                 KitManager kitManager = plugin.getKitManager();
-                String kitName = arguments[0];
+                String kitName = arguments[0].toLowerCase();
                 if (!kitManager.existKit(kitName)) {
                     int claimTime = 0;
                     if (arguments.length > 1) {

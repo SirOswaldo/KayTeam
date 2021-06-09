@@ -16,13 +16,12 @@
  */
 
 package org.kayteam.harimelt.kits;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.kayteam.harimelt.kits.commands.*;
 import org.kayteam.harimelt.kits.inventories.ItemsEditorInventory;
 import org.kayteam.harimelt.kits.inventories.MenuEditorInventory;
 import org.kayteam.harimelt.kits.kit.KitManager;
-import org.kayteam.harimelt.kits.listeners.AsyncPlayerChatListener;
+import org.kayteam.harimelt.kits.listeners.PlayerToggleSneakListener;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class HarimeltKits extends JavaPlugin {
         // Listeners
         getServer().getPluginManager().registerEvents(new MenuEditorInventory(this), this);
         getServer().getPluginManager().registerEvents(new ItemsEditorInventory(this), this);
-        getServer().getPluginManager().registerEvents(new AsyncPlayerChatListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerToggleSneakListener(this), this);
         // KitManager
         kitManager.loadAllKits();
     }

@@ -52,7 +52,7 @@ public class ClaimKitCommand extends SimpleCommand {
                         data.registerFileConfiguration();
                         if (kit.getClaimTime() == 0) {
                             if (player.hasPermission("harimelt.bypass.claim.one.time") || !data.contains(kitName)) {
-                                data.set(kitName, 0);
+                                data.set(kitName, System.currentTimeMillis());
                                 data.saveFileConfiguration();
                                 for (ItemStack itemStack:kit.getItems()) {
                                     if (player.getInventory().firstEmpty() != -1) {
@@ -67,7 +67,7 @@ public class ClaimKitCommand extends SimpleCommand {
                             }
                         } else {
                             if (!data.contains(kitName)) {
-                                data.set(kitName, (int) (System.currentTimeMillis() / 1000));
+                                data.set(kitName, System.currentTimeMillis());
                                 data.saveFileConfiguration();
                                 for (ItemStack itemStack:kit.getItems()) {
                                     if (player.getInventory().firstEmpty() != -1) {
@@ -79,10 +79,11 @@ public class ClaimKitCommand extends SimpleCommand {
                                 messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
                             } else {
                                 int claimTime = kit.getClaimTime();
-                                int lastClaimTime = data.getInt(kitName);
-                                int currentTime = (int) System.currentTimeMillis() / 1000;
-                                if (player.hasPermission("harimelt.bypass.claim.time") || currentTime - lastClaimTime >= claimTime) {
-                                    data.set(kitName, (int) (System.currentTimeMillis() / 1000));
+                                long lastClaimTime = data.getLong(kitName);
+                                long currentTime = System.currentTimeMillis();
+                                long pass = (currentTime - lastClaimTime);
+                                if (player.hasPermission("harimelt.bypass.claim.time") || (pass / 1000) >= claimTime) {
+                                    data.set(kitName, currentTime);
                                     data.saveFileConfiguration();
                                     for (ItemStack itemStack:kit.getItems()) {
                                         if (player.getInventory().firstEmpty() != -1) {
@@ -93,7 +94,7 @@ public class ClaimKitCommand extends SimpleCommand {
                                     }
                                     messages.sendMessage(player, "ClaimKit.kitClaimed", new String[][] {{"%kit.name%", kitName}});
                                 } else {
-                                    messages.sendMessage(player, "ClaimKit.needWaitToClaim", new String[][] {{"%kit.name%", kitName}, {"%seconds%", "" + (claimTime - (currentTime - lastClaimTime))}});
+                                    messages.sendMessage(player, "ClaimKit.needWaitToClaim", new String[][] {{"%kit.name%", kitName}, {"%seconds%", "" + (claimTime - (pass / 1000))}});
                                 }
                             }
                         }
