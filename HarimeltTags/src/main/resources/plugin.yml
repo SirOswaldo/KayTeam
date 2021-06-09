@@ -1,0 +1,68 @@
+main: org.kayteam.harimelt.tags.HarimeltTags
+name: HarimeltTags
+version: 1.0
+api-version: 1.16
+softdepend:
+  - PlaceholderAPI
+commands:
+  HarimeltTags:
+    description: HarimeltTags
+    aliases:
+      - tagsadmin
+      - htags
+  CreateTag:
+    description: CreateTag
+    aliases:
+      - creartag
+      - ctag
+  DeleteTag:
+    description: DeleteTag
+    aliases:
+      - eliminartag
+      - dtag
+  EditTag:
+    description: EditTag
+    aliases:
+      - editartag
+      - etag
+  ListTags:
+    description: ListTags
+    aliases:
+      - listartags
+      - ltags
+      - tags
+  SelectTag:
+    description: SelectTag
+    aliases:
+      - seleccionartag
+      - stag
+      - tag
+permissions:
+  harimelt.admin:
+    description: Can manage this plugin
+    default: op
+    children:
+      harimelt.create.tag: true
+      harimelt.delete.tag: true
+      harimelt.edit.tag: true
+      harimelt.list.tag: true
+      harimelt.select.tag: true
+      harimelt.select.other.tag: true
+  harimelt.create.tag:
+    description: Can create tags
+    default: op
+  harimelt.delete.tag:
+    description: Can delete tags
+    default: op
+  harimelt.edit.tag:
+    description: Can edit tags
+    default: op
+  harimelt.list.tag:
+    description: Can list tags
+    default: true
+  harimelt.select.tag:
+    description: Can select tag
+    default: true
+  harimelt.select.other.tag:
+    description: Can select tag for others players
+    default: op

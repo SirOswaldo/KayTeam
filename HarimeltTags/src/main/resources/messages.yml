@@ -1,0 +1,56 @@
+prefix: "&aHarimelt&2Tags &8»"
+CreateTag:
+  noPermission: "%prefix% &fNo tienes permisos suficientes."
+  tagNameEmpty: "%prefix% &fEl nombre del tag no puede estar vacío."
+  tagAlreadyExist: "%prefix% &fEl nombre del tag &2%tag.name%&f ya esta en uso."
+  tagCreated: "%prefix% &fEl tag &2%tag.name%&f se creo exitosamente."
+DeleteTag:
+  noPermission: "%prefix% &fNo tienes permisos suficientes."
+  tagNameEmpty: "%prefix% &fEl nombre del tag no puede estar vacío."
+  tagNoExist: "%prefix% &fEl tag &2%tag.name%&f no existe."
+  tagDeleted: "%prefix% &fEl tag &2%tag.name%&f se elimino exitosamente."
+EditTag:
+  isConsole: "%prefix% &fNo puedes editar el tag desde la consola."
+  noPermission: "%prefix% &fNo tienes permisos suficientes."
+  tagNameEmpty: "%prefix% &fEl nombre del tag no puede estar vacío."
+  tagNoExist: "%prefix% &fEl tag &2%tag.name%&f no existe."
+  menuClose: "%prefix% &fCerraste el menú de edición."
+  inputPrefix:
+    - "%prefix% &fFirme el libro con el nuevo prefix."
+    - "&fSi desea cancelar debe agacharse."
+  inputSuffix:
+    - "%prefix% &fFirme el libro con el nuevo suffix."
+    - "&fSi desea cancelar debe agacharse."
+  inputRename:
+    - "%prefix% &fFirme el libro con el nuevo nombre del tag."
+    - "&fRecuerde que no debe contener espacios."
+    - "&fSi desea cancelar debe agacharse."
+ListTags:
+  noPermission: "%prefix% &fNo tienes permisos suficientes."
+  listIsEmpty: "%prefix% &fNo hay tags existentes."
+  header: "%prefix% &fLista de Tags"
+  format: "%tag.name% - %tag.prefix% - %tag.suffix%"
+  footer: "-------------------------"
+SelectTag:
+  noPermission: "%prefix% &fNo tienes permisos suficientes."
+  tagNameEmpty: "%prefix% &fEl nombre del tag no puede estar vacío."
+  tagNoExist: "%prefix% &fEl tag &2%tag.name%&f no existe."
+  tagNoPermission: "%prefix% &fNo tienes permitido usar el tag &2%tag.name%&f."
+  tagSelected: "%prefix% &fSeleccionaste el tag &2%tag.name%&f."
+  noPermissionOthers: "%prefix% &fNo tienes permisos suficientes."
+  playerNoExist: "%prefix% &fEl jugador &2%player.name%&f no existe o esta desconectado."
+  tagNoPermissionOther: "%prefix% &fNo tienes permitido usar el tag &2%tag.name%&f en otros jugadores."
+  tagAlreadySelected: "%prefix% &fYa te encuentras usando el tag &2%tag.name%&f."
+  tagAlreadySelectedOther: "%prefix% &fEl jugador &2%player.name% &fya tiene seleccionado el tag &2%tag.name%&f."
+  tagSelectedOther: "%prefix% &fLe cambiaste el tag del jugador &2%player.name% &fal &2%tag.name%&f."
+  tagSelectedOtherNotify: "%prefix% &fTu tag fue cambiado a &2%tag.name%&f."
+  playerNameEmpty: "%prefix% &fEl nombre del jugador esta vacío."
+HarimeltTags:
+  noPermission: "%prefix% &fNo tienes permisos suficientes."
+  optionEmpty: "%prefix% &fLa opción no puede estar vacía."
+  optionInvalid: "%prefix% &fLa opción &2%option% &fno es válida."
+  help:
+    - "%prefix% &fAyuda del comando"
+    - " /%command% reload &8» &2Recarga el complemento."
+    - " /%command% version &8» &2Información del complemento."
+  reloaded: "%prefix% &fEl complemento &2%plugin%&f fue recargado."

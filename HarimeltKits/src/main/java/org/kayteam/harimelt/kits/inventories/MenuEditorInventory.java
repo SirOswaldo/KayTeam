@@ -28,12 +28,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.kayteam.harimelt.kits.HarimeltKits;
 import org.kayteam.harimelt.kits.kit.Kit;
 import org.kayteam.harimelt.kits.tasks.OpenInventoryTask;
 import org.kayteam.harimelt.kits.tasks.RenewBook;
-import org.kayteam.harimelt.kits.utils.input.BookInput;
+import org.kayteam.harimelt.kits.utils.itemstack.ItemStackUtil;
 import org.kayteam.harimelt.kits.utils.yaml.Yaml;
 
 import java.util.Objects;
@@ -66,14 +65,16 @@ public class MenuEditorInventory implements Listener {
         }
         // Buttons
         Kit kit = plugin.getKitManager().getKit(name);
-        inventory.setItem(10, configuration.replace(configuration.getItemStack("inventory.kitEditor.items.claim-time"), new String[][] {
-                {"%kit.name%", name},
-                {"%kit.claim.time%", kit.getClaimTime() + ""}
-        }));
-        inventory.setItem(11, configuration.replace(configuration.getItemStack("inventory.kitEditor.items.items"), new String[][] {
-                {"%kit.name%", name},
-                {"%kit.claim.time%", kit.getClaimTime() + ""}
-        }));
+        // ClaimTime
+        ItemStack claimTime = configuration.getItemStack("inventory.kitEditor.items.claim-time");
+        claimTime = ItemStackUtil.replace(claimTime, "%kit.name%", kit.getName());
+        claimTime = ItemStackUtil.replace(claimTime, "%kit.claim.time%", kit.getClaimTime() + "");
+        inventory.setItem(10, claimTime);
+        // Items
+        ItemStack items = configuration.getItemStack("inventory.kitEditor.items.items");
+        items = ItemStackUtil.replace(items, "%kit.name%", kit.getName());
+        items = ItemStackUtil.replace(items, "%kit.claim.time%", kit.getClaimTime() + "");
+        inventory.setItem(11, items);
         inventory.setItem(31, configuration.getItemStack("inventory.kitEditor.items.close"));
         return inventory;
     }

@@ -62,7 +62,11 @@ public class CreateKitCommand extends SimpleCommand {
                     }
                     Kit kit = new Kit(kitName);
                     List<ItemStack> items = new ArrayList<>();
-                    Collections.addAll(items, player.getInventory().getContents());
+                    for (ItemStack itemStack:player.getInventory().getContents()) {
+                        if (itemStack != null) {
+                            items.add(itemStack);
+                        }
+                    }
                     kit.setClaimTime(claimTime);
                     kit.setItems(items);
                     kitManager.addKit(kit);

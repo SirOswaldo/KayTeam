@@ -87,7 +87,9 @@ public class ClaimKitCommand extends SimpleCommand {
                                     data.saveFileConfiguration();
                                     for (ItemStack itemStack:kit.getItems()) {
                                         if (player.getInventory().firstEmpty() != -1) {
-                                            player.getInventory().addItem(itemStack);
+                                            if (itemStack != null) {
+                                                player.getInventory().addItem(itemStack);
+                                            }
                                         } else {
                                             Objects.requireNonNull(player.getLocation().getWorld()).dropItem(player.getLocation(), itemStack);
                                         }

@@ -17,6 +17,7 @@
 
 package org.kayteam.harimelt.kits.kit;
 
+import org.bukkit.Keyed;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.kayteam.harimelt.kits.HarimeltKits;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class KitManager {
 
@@ -58,21 +60,11 @@ public class KitManager {
                         } else {
                             plugin.getLogger().info("The kit '" + name + "' no contain claim time and it has been set to 0.");
                         }
-                        List<?> itemsRaw = new ArrayList<>();
                         List<ItemStack> items = new ArrayList<>();
-                        if (kitConfiguration.contains("items")) {
-                            if (kitConfiguration.isList("items")) {
-                                itemsRaw = kitConfiguration.getList("items");
-                            }
-                        }
-                        if (itemsRaw != null) {
-                            if (!itemsRaw.isEmpty()) {
-                                for (Object o : itemsRaw) {
-                                    ItemStack itemStack = (ItemStack) o;
-                                    if (itemStack != null) {
-                                        items.add(itemStack);
-                                    }
-                                }
+                        if (kitYaml.contains("items")) {
+                            Set<String> strings = kitYaml.getFileConfiguration().getConfigurationSection("items").getValues(false).keySet();
+                            for (String string:strings) {
+                                items.add(kitYaml.getItemStack("items." + string));
                             }
                         }
                         Kit kit = new Kit(name);
@@ -100,7 +92,12 @@ public class KitManager {
         yaml.registerFileConfiguration();
         FileConfiguration configuration = yaml.getFileConfiguration();
         configuration.set("claim-time", kit.getClaimTime());
-        configuration.set("items", kit.getItems());
+        for (int i = 0; i < kit.getItems().size(); i++) {
+            ItemStack itemStack = kit.getItems().get(i);
+            if (itemStack != null) {
+                yaml.setItemStack("items."+ i, itemStack);
+            }
+        }
         yaml.saveFileConfiguration();
     }
 

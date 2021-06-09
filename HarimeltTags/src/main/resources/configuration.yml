@@ -1,0 +1,45 @@
+# Storages Available: YAML, MYSQL
+storage: YAML
+mysql:
+  ip: ""
+  port: ""
+  username: ""
+  password: ""
+  database: ""
+  table: ""
+editorInventory:
+  bookInputText:
+    prefix:
+      - "Firme el libro con el nuevo prefix"
+    suffix:
+      - "Firme el libro con el nuevo suffix"
+    rename:
+      - "Firme el libro con el nuevo nombre del tag. Recuerde que el nombre no debe tener espacios."
+  title: "Tag Editor"
+  items:
+    panel:
+      material: "BLUE_STAINED_GLASS_PANE"
+      display-name: "&c"
+    close:
+      material: "IRON_DOOR"
+      display-name: "&cCerrar Menú"
+    prefix:
+      material: "NAME_TAG"
+      display-name: "&fCambiar Prefijo"
+    suffix:
+      material: "NAME_TAG"
+      display-name: "&fCambiar Sufijo"
+    rename:
+      material: "NAME_TAG"
+      display-name: "&fCambiar Nombre"
+    information:
+      material: "PAPER"
+      display-name: "&fInformación"
+      lore:
+        - "&f"
+        - "&fNombre &8» &2%name%"
+        - "&f"
+        - "&fPrefijo &8» &2%prefix%"
+        - "&f"
+        - "&fSufijo &8» &2%suffix%"
+
